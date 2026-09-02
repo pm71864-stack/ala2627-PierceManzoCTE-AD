@@ -114,7 +114,7 @@ function draw() {
     context.save();
     context.translate(item.x, item.y);
     context.rotate(item.rotation);
-    context.fillStyle = item.type === "pulse" ? "#63e6e2" : "#ff7068";
+    context.fillStyle = item.type === "pulse" ? "#f90909" : "#ff7068";
     context.shadowColor = context.fillStyle;
     context.shadowBlur = 14;
     context.fillRect(-item.size / 2, -item.size / 2, item.size, item.size);
