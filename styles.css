@@ -1,11 +1,11 @@
 :root {
-  --ink: #e9f1ed;
-  --muted: #8ea39d;
+  --ink: #3b2796;
+  --muted: #985050;
   --acid: #d5ff51;
-  --cyan: #63e6e2;
+  --cyan: #07f017;
   --red: #ff7068;
   --paper: #0b1114;
-  --line: #263437;
+  --line: #11ddc2;
 }
 
 *, *::before, *::after { box-sizing: border-box; }
@@ -24,7 +24,7 @@ body::before {
   z-index: -1;
   inset: 0;
   opacity: .12;
-  background-image: linear-gradient(#9cc9c2 1px, transparent 1px), linear-gradient(90deg, #9cc9c2 1px, transparent 1px);
+  background-image: linear-gradient(#8ff7f2 1px, transparent 1px), linear-gradient(90deg, #8fdfda 1px, transparent 1px);
   background-size: 4rem 4rem;
   content: "";
 }
