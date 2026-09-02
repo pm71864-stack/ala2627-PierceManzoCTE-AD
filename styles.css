@@ -53,7 +53,7 @@ button { border: 0; cursor: pointer; }
 .game-message button:hover, .game-message button:focus-visible { background: #f0ffab; }
 .controls { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding-top: 1rem; color: var(--muted); font-size: .68rem; }
 .controls p { margin: 0; }
-.key { display: inline-grid; place-items: center; min-width: 1.45rem; height: 1.45rem; margin: 0 .1rem; border: 1px solid #526764; color: var(--ink); font-size: .68rem; }
+.key { display: inline-grid; place-items: center; min-width: 1.45rem; height: 1.45rem; margin: 0 .1rem; border: 1px solid #ff1e1e; color: var(--ink); font-size: .68rem; }
 .dot { margin: 0 .6rem; color: var(--red); }
 .icon-button { padding: .35rem .55rem; border: 1px solid var(--line); color: var(--cyan); background: transparent; font-size: .9rem; }
 .icon-button:hover, .icon-button:focus-visible { border-color: var(--cyan); }
