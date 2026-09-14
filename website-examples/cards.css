@@ -61,7 +61,7 @@ h1 {
 }
 
 .card {
-  --card-color: #e77c6d;
+  --card-color: #000000;
   position: relative;
   isolation: isolate;
   display: flex;
