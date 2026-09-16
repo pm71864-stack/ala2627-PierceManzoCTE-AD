@@ -182,7 +182,7 @@ footer{max-width:96rem;margin:2rem auto 0;color:var(--ss-faint,#74809a);font-siz
       <p class="slo">Put a real button on my page and make a click run my own code.</p>
       <div class="row">
         <button class="b solid" data-open="m-read" type="button">What am I learning?</button>
-        
+
         <button class="b" data-open="m-files" type="button">Files &amp; terminal</button>
       </div>
     </section>
@@ -242,7 +242,7 @@ Then ask me one question to check I understood.</pre></div>
   <dialog id="m-read"><div class="sheet"><button class="x" data-close type="button">Close</button>
     <h3>What am I learning?</h3><p>Three lines today, and they are the three lines behind nearly every button on the internet.</p><p>The first finds the button. Every element can have an id, and document.querySelector(&quot;#action&quot;) means “find the thing whose id is action.” The # is what says id — leave it off and JavaScript finds nothing.</p><p>The second listens. addEventListener(&quot;click&quot;, function () { … }) means “when this is clicked, run the code inside the curly brackets.” Here is the part that surprises people: that code does not run when the page loads. It sits there waiting. It only runs when the click actually happens.</p><p>The third changes what you see. textContent is the words inside an element, and setting it swaps them for new ones. That is the moment your page responds to a person.</p></div></dialog>
 
-  
+
 
   <dialog id="m-files"><div class="sheet"><button class="x" data-close type="button">Close</button>
     <h3>Files &amp; terminal</h3>
@@ -490,6 +490,15 @@ if (rcGo) rcGo.addEventListener("click", function(){
   a.download = RC.file + "-" + name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") + ".txt";
   document.body.appendChild(a); a.click(); a.remove();
   msg.textContent = "Downloaded. Upload that file to the assignment.";
+});
+const titleButton = document.querySelector("#titleButton");
+2
+ 
+3
+titleButton.addEventListener("click", function () {
+4
+document.title = "My Basketball Website";
+5
 });
 </script>
 </body>

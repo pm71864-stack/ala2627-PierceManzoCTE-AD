@@ -3,12 +3,12 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Make it yours, and say hello from JavaScript — App Design 1</title>
+<title>About me Pierce— App Design 1</title>
 <meta name="color-scheme" content="dark">
 <style>
 :root{--acc:var(--ss-cyan,#00e5ff)}
 *{box-sizing:border-box}
-body{margin:0;background:var(--ss-void,#0d1322);color:var(--ss-bone,#e8ecf3);
+body{margin:0;background:var(--ss-void,#2c57c5);color:var(--ss-bone,#2e333c);
   font:16px/1.6 var(--ss-body,"Inter",system-ui,sans-serif);padding:1.4rem 1rem 5rem}
 .wrap{max-width:96rem;margin:0 auto}
 a.back{display:inline-block;color:var(--acc);text-decoration:none;font:600 .82rem/1 var(--ss-mono,ui-monospace,monospace);
@@ -38,9 +38,9 @@ a.back{display:inline-block;color:var(--acc);text-decoration:none;font:600 .82re
 
 /* ── the tile ───────────────────────────────────────────────────────────── */
 .tl{position:relative;overflow:hidden;border-radius:18px;padding:14px 15px 15px;display:flex;flex-direction:column;
-  background:linear-gradient(160deg,rgba(255,255,255,.055),rgba(255,255,255,.02));
+  background:linear-gradient(160deg,rgba(255, 238, 238, 0.055),rgba(209, 35, 35, 0.02));
   border:1px solid color-mix(in srgb, var(--acc) 42%, var(--ss-border,#2a3142));
-  box-shadow:0 1px 0 rgba(255,255,255,.06) inset,0 12px 30px -18px rgba(0,0,0,.9);
+  box-shadow:0 1px 0 rgba(117, 53, 53, 0.06) inset,0 12px 30px -18px rgba(247, 224, 224, 0.9);
   transition:transform .16s var(--ss-ease,cubic-bezier(.2,.7,.3,1)),border-color .16s}
 .tl::after{content:"";position:absolute;inset:0;pointer-events:none;border-radius:inherit;
   background:radial-gradient(125% 85% at 12% 122%, var(--acc) 0%, transparent 66%);opacity:.30}
@@ -182,7 +182,7 @@ footer{max-width:96rem;margin:2rem auto 0;color:var(--ss-faint,#74809a);font-siz
       <p class="slo">Make the project site mine, connect a JavaScript file to it, and prove the JavaScript is running.</p>
       <div class="row">
         <button class="b solid" data-open="m-read" type="button">What am I learning?</button>
-        
+
         <button class="b" data-open="m-files" type="button">Files &amp; terminal</button>
       </div>
     </section>
@@ -236,7 +236,7 @@ Do not change anything else in my code.</pre></div>
   <dialog id="m-read"><div class="sheet"><button class="x" data-close type="button">Close</button>
     <h3>What am I learning?</h3><p>This week your site stops just sitting there. By Friday, clicking something on it will do a thing only your site does — and you will have built it yourself, in JavaScript.</p><p>Today is the setup, and it matters more than it sounds. First you get the whole week in one go, so there is nothing to pull again until next week. Then you make the project yours — your topic, your colours, your words — because a feature on somebody else's page is not your feature.</p><p>Last, you prove your JavaScript is running with one line: console.log. The console is where JavaScript talks back to you. School Chromebooks block the browser's own console, so your project has one built in — a panel along the bottom of your page. console.log prints there, and so does every error. When something goes wrong this week, that panel is where it tells you what, so you learn to read it on day one.</p></div></dialog>
 
-  
+
 
   <dialog id="m-files"><div class="sheet"><button class="x" data-close type="button">Close</button>
     <h3>Files &amp; terminal</h3>
