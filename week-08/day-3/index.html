@@ -7,16 +7,18 @@
   <title>Nebula Defender</title>
   <style>
     :root {
-      --bg: #070b14;
-      --panel: rgba(15, 23, 42, 0.8);
-      --panel-border: rgba(148, 163, 184, 0.28);
+      --bg: #020507;
+      --bg-2: #0a0f17;
+      --panel: rgba(12, 16, 24, 0.92);
+      --panel-border: rgba(110, 231, 255, 0.18);
       --cyan: #6ee7ff;
       --blue: #7c9cff;
       --pink: #f472b6;
       --green: #7ef7b5;
       --gold: #ffd166;
       --text: #edf6ff;
-      --muted: #b9c7db;
+      --muted: #a7b8cf;
+      --line: rgba(255, 255, 255, 0.07);
     }
 
     * {
@@ -30,14 +32,41 @@
       place-items: center;
       font-family: Arial, Helvetica, sans-serif;
       background:
-        radial-gradient(circle at top, rgba(124, 156, 255, 0.25), transparent 35%),
-        linear-gradient(180deg, #050914 0%, #0a1220 100%);
+        radial-gradient(circle at 50% 0%, rgba(110, 231, 255, 0.12), transparent 25%),
+        radial-gradient(circle at 80% 15%, rgba(124, 156, 255, 0.15), transparent 20%),
+        linear-gradient(180deg, #000000 0%, var(--bg-2) 45%, #02070d 100%);
       color: var(--text);
+      position: relative;
+      overflow: hidden;
+    }
+
+    body::before,
+    body::after {
+      content: "";
+      position: absolute;
+      inset: -20%;
+      pointer-events: none;
+      background-repeat: no-repeat;
+      opacity: 0.7;
+    }
+
+    body::before {
+      background-image:
+        linear-gradient(rgba(110, 231, 255, 0.07) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(110, 231, 255, 0.04) 1px, transparent 1px);
+      background-size: 30px 30px;
+      mask-image: radial-gradient(circle at center, black 35%, transparent 80%);
+    }
+
+    body::after {
+      background: radial-gradient(circle at center, transparent 52%, rgba(0, 0, 0, 0.38) 100%);
     }
 
     .app {
       width: min(96vw, 980px);
       padding: 24px 18px 28px;
+      position: relative;
+      z-index: 1;
     }
 
     .topbar {
@@ -49,8 +78,9 @@
       padding: 12px 14px;
       border: 1px solid var(--panel-border);
       border-radius: 16px;
-      background: rgba(7, 11, 20, 0.72);
-      box-shadow: 0 12px 36px rgba(0, 0, 0, 0.25);
+      background: rgba(10, 14, 20, 0.8);
+      backdrop-filter: blur(6px);
+      box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.02), 0 12px 36px rgba(0, 0, 0, 0.45);
     }
 
     .game-link {
@@ -58,12 +88,14 @@
       margin: 0 0 16px;
       padding: 10px 16px;
       border-radius: 999px;
-      background: linear-gradient(135deg, var(--cyan), var(--blue));
-      color: #07111d;
+      background: linear-gradient(135deg, rgba(110, 231, 255, 0.28), rgba(124, 156, 255, 0.18));
+      border: 1px solid rgba(110, 231, 255, 0.35);
+      color: var(--text);
       text-decoration: none;
       font-weight: 800;
       letter-spacing: 0.08em;
       text-transform: uppercase;
+      box-shadow: 0 0 20px rgba(110, 231, 255, 0.15);
     }
 
     .eyebrow {
@@ -115,16 +147,18 @@
       position: relative;
       border-radius: 22px;
       overflow: hidden;
-      border: 1px solid rgba(110, 231, 255, 0.35);
-      background: linear-gradient(180deg, rgba(8, 13, 24, 0.98), rgba(8, 18, 34, 0.95));
-      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.42), inset 0 0 30px rgba(110, 231, 255, 0.12);
+      border: 1px solid rgba(110, 231, 255, 0.2);
+      background: linear-gradient(180deg, rgba(3, 6, 11, 0.96), rgba(9, 18, 31, 0.92));
+      box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.03), 0 20px 50px rgba(0, 0, 0, 0.5), inset 0 0 30px rgba(110, 231, 255, 0.08);
     }
 
     canvas {
       display: block;
       width: 100%;
       height: auto;
-      background: linear-gradient(180deg, rgba(7, 15, 26, 0.98), rgba(9, 18, 34, 0.96));
+      background:
+        radial-gradient(circle at top, rgba(110, 231, 255, 0.06), transparent 30%),
+        linear-gradient(180deg, #050a12 0%, #0a1018 100%);
     }
 
     .overlay {
@@ -147,9 +181,9 @@
       padding: 26px 24px;
       text-align: center;
       border-radius: 18px;
-      border: 1px solid rgba(110, 231, 255, 0.45);
-      background: rgba(8, 12, 22, 0.9);
-      box-shadow: 0 18px 40px rgba(0, 0, 0, 0.4);
+      border: 1px solid rgba(110, 231, 255, 0.25);
+      background: rgba(7, 11, 17, 0.88);
+      box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.03), 0 18px 40px rgba(0, 0, 0, 0.55), 0 0 28px rgba(110, 231, 255, 0.12);
     }
 
     .panel h2 {
