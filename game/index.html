@@ -5,6 +5,11 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>The Vault Arcade</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600;700&display=swap"
+    rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
 </head>
 
@@ -12,14 +17,15 @@
   <main class="vault-shell">
     <header class="topbar">
       <a class="back-link" href="../">← Main site</a>
-      <div class="vault-mark"><span>THE</span> VAULT <b>ARCADE</b></div>
+      <div class="vault-mark"><span>THE</span> VAULT <b>ARCADE / 03</b></div>
       <span class="status"><i></i> LIVE</span>
     </header>
 
     <section class="intro">
       <p class="kicker">Choose your challenge</p>
       <h1>Three ways<br><em>to play.</em></h1>
-      <p class="intro-copy">Step inside the Vault. Pick a game, chase a high score, and press restart whenever you want
+      <p class="intro-copy"><span class="copy-index">[ PLAYLIST_03 ]</span> Step inside the Vault. Pick a game, chase a
+        high score, and press restart whenever you want
         another run.</p>
     </section>
 
@@ -39,6 +45,12 @@
           <h2 id="game-title">Neon Dash</h2>
         </div>
         <div class="score-box"><span>SCORE</span><strong id="score">0000</strong></div>
+      </div>
+      <div class="difficulty-panel" id="difficulty-panel" hidden>
+        <span>DIFFICULTY</span>
+        <button class="difficulty-choice" data-difficulty="easy">Easy</button>
+        <button class="difficulty-choice active" data-difficulty="medium">Medium</button>
+        <button class="difficulty-choice" data-difficulty="hard">Hard</button>
       </div>
       <div class="canvas-wrap"><canvas id="game-canvas" width="900" height="500" aria-label="Game screen"></canvas>
         <div class="start-card" id="start-card"><span class="start-icon">✦</span>
