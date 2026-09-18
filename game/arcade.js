@@ -14,6 +14,8 @@ const controlsCopy = document.querySelector('#controls-copy');
 const touchButtons = document.querySelectorAll('.touch-controls button');
 const colors = { lime: '#d5f36b', orange: '#ff7a59', cyan: '#6de8e0', ink: '#f4f0e8', muted: '#a8a59e' };
 const pongSettings = { easy: { speed: 4, aiSkill: .035, serveY: 2.4 }, medium: { speed: 5, aiSkill: .055, serveY: 3 }, hard: { speed: 6.5, aiSkill: .085, serveY: 4 } };
+const extraModes = ['meteor', 'snake', 'memory', 'drift', 'dungeon', 'bubble', 'laser', 'orbit', 'stack', 'color'];
+const extraDifficulty = { easy: { speed: .7, count: 9, time: 1500 }, medium: { speed: 1, count: 12, time: 1100 }, hard: { speed: 1.35, count: 16, time: 780 } };
 let mode = 'dash';
 let difficulty = 'medium';
 let running = false;
@@ -121,6 +123,8 @@ function reset() {
     game = { round: 0, hits: 0, target: null, deadline: 0, best: 0 };
   }
 
+  if (extraModes.includes(mode)) resetExtra();
+
   draw();
 }
 
@@ -184,6 +188,7 @@ function update(timestamp) {
   if (mode === 'hoops') updateHoops();
   if (mode === 'blackjack') updateBlackjack();
   if (mode === 'reflex') updateReflex(timestamp);
+  if (extraModes.includes(mode)) updateExtra(timestamp);
 }
 
 function draw() {
@@ -193,6 +198,7 @@ function draw() {
   if (mode === 'hoops') drawHoops();
   if (mode === 'blackjack') drawBlackjack();
   if (mode === 'reflex') drawReflex();
+  if (extraModes.includes(mode)) drawExtra();
   scoreElement.textContent = String(Math.max(0, Math.floor(score))).padStart(4, '0');
 }
 
@@ -604,6 +610,77 @@ function drawReflex() {
   text('CLICK THE RING', 700, 40, 14, colors.lime);
 }
 
+function extraConfig() {
+  return extraDifficulty[difficulty];
+}
+
+function resetExtra() {
+  const config = extraConfig();
+  difficultyPanel.hidden = false;
+  const details = {
+    meteor: ['Meteor Run', 'DODGE THE STORM', 'ARROWS / A D - MOVE', 'Stay alive as long as possible.'],
+    snake: ['Neon Serpent', 'EAT THE LIGHT', 'ARROWS / W A S D - STEER', 'Collect sparks without crossing yourself.'],
+    memory: ['Memory Matrix', 'FLIP THE PATTERN', 'CLICK CARDS - MATCH PAIRS', 'Find every matching signal.'],
+    drift: ['Drift Circuit', 'OWN THE CORNERS', 'ARROWS / A D - STEER', 'Thread the cones for distance.'],
+    dungeon: ['Crystal Quest', 'LIGHT THE RUINS', 'ARROWS / W A S D - MOVE', 'Collect crystals and avoid sentries.'],
+    bubble: ['Bubble Pop', 'CLEAR THE CLUSTER', 'CLICK BUBBLES - SPACE - POP', 'Pop every bubble before the timer fades.'],
+    laser: ['Laser Lock', 'BREAK THE GRID', 'ARROWS / A D - MOVE - SPACE - FIRE', 'Clear the drones before they reach you.'],
+    orbit: ['Orbit Shift', 'CATCH THE SATELLITES', 'ARROWS / A D - SHIFT ORBIT', 'Intercept satellites as they swing past.'],
+    stack: ['Perfect Stack', 'BUILD THE SKYLINE', 'CLICK / SPACE - DROP BLOCK', 'Land each block on the last.'],
+    color: ['Color Rush', 'HIT THE SIGNAL', 'CLICK THE MATCHING COLOR', 'React before the signal changes.']
+  }[mode];
+  title.textContent = details[0];
+  label.textContent = `0${7 + extraModes.indexOf(mode)} / ${details[1]} - ${difficulty.toUpperCase()}`;
+  controlsCopy.textContent = details[2];
+  setStartCard('Ready to play?', details[3], 'Start game');
+  game = { tick: 0, config };
+  if (mode === 'meteor') game.player = { x: 450, y: 420 }, game.rocks = [];
+  if (mode === 'snake') { game.cells = [{ x: 9, y: 8 }, { x: 8, y: 8 }, { x: 7, y: 8 }]; game.dir = { x: 1, y: 0 }; game.next = { x: 1, y: 0 }; game.food = randomCell(game.cells); game.tick = 0; }
+  if (mode === 'memory') { const size = difficulty === 'hard' ? 6 : difficulty === 'easy' ? 3 : 4; game.size = size; game.cards = shuffle([...Array((size * size) / 2).keys(), ...Array((size * size) / 2).keys()]); game.revealed = []; game.matched = []; game.flipAt = 0; }
+  if (mode === 'drift') game.player = { x: 450, y: 405 }, game.obstacles = [], game.lane = 0;
+  if (mode === 'dungeon') game.player = { x: 1, y: 1 }, game.crystals = [{ x: 8, y: 2 }, { x: 3, y: 6 }, { x: 12, y: 8 }], game.enemies = [{ x: 12, y: 2 }, { x: 6, y: 7 }];
+  if (mode === 'bubble') game.bubbles = Array.from({ length: config.count }, () => ({ x: 80 + Math.random() * 740, y: 100 + Math.random() * 310, r: 18 + Math.random() * 16, hue: Math.random() * 360 }));
+  if (mode === 'laser') game.player = 450, game.bullets = [], game.drones = [];
+  if (mode === 'orbit') game.angle = 0, game.offset = 0, game.satellites = Array.from({ length: config.count - 4 }, (_, index) => ({ angle: index * 1.5, radius: 90 + index * 24, hit: false }));
+  if (mode === 'stack') game.blocks = [{ x: 300, w: 300, y: 460 }], game.current = { x: 300, w: 300, y: 410, dir: 1 };
+  if (mode === 'color') { game.round = 0; game.options = []; nextColor(); }
+}
+
+function shuffle(items) { return items.sort(() => Math.random() - .5); }
+function randomCell(occupied) { let cell; do { cell = { x: 1 + Math.floor(Math.random() * 16), y: 1 + Math.floor(Math.random() * 10) }; } while (occupied.some(item => item.x === cell.x && item.y === cell.y)); return cell; }
+function updateExtra(timestamp) {
+  const config = game.config;
+  game.tick++;
+  if (mode === 'meteor') { if (keys.ArrowLeft || keys.a) game.player.x -= 6; if (keys.ArrowRight || keys.d) game.player.x += 6; game.player.x = Math.max(28, Math.min(872, game.player.x)); if (game.tick % Math.max(16, Math.floor(34 / config.speed)) === 0) game.rocks.push({ x: 20 + Math.random() * 860, y: -30, r: 12 + Math.random() * 22 }); game.rocks.forEach(rock => rock.y += 3.4 * config.speed); game.rocks = game.rocks.filter(rock => rock.y < 540); if (game.rocks.some(rock => Math.hypot(rock.x - game.player.x, rock.y - game.player.y) < rock.r + 22)) finish('Storm hit'); else setScore(game.tick / 3); }
+  if (mode === 'snake' && game.tick % Math.max(5, Math.floor(10 / config.speed)) === 0) { if (keys.ArrowUp || keys.w) game.next = { x: 0, y: -1 }; if (keys.ArrowDown || keys.s) game.next = { x: 0, y: 1 }; if (keys.ArrowLeft || keys.a) game.next = { x: -1, y: 0 }; if (keys.ArrowRight || keys.d) game.next = { x: 1, y: 0 }; if (game.next.x !== -game.dir.x || game.next.y !== -game.dir.y) game.dir = game.next; const head = { x: game.cells[0].x + game.dir.x, y: game.cells[0].y + game.dir.y }; if (head.x < 0 || head.x > 17 || head.y < 0 || head.y > 11 || game.cells.some(cell => cell.x === head.x && cell.y === head.y)) { finish('Serpent crashed'); return; } game.cells.unshift(head); if (head.x === game.food.x && head.y === game.food.y) { score += 10; game.food = randomCell(game.cells); } else game.cells.pop(); setScore(score); }
+  if (mode === 'memory' && game.revealed.length === 2 && game.tick > game.flipAt + 35) { if (game.cards[game.revealed[0]] === game.cards[game.revealed[1]]) { game.matched.push(...game.revealed); score += 20; } game.revealed = []; if (game.matched.length === game.cards.length) finish('Matrix solved'); }
+  if (mode === 'drift') { if (keys.ArrowLeft || keys.a) game.player.x -= 5; if (keys.ArrowRight || keys.d) game.player.x += 5; game.player.x = Math.max(45, Math.min(855, game.player.x)); if (game.tick % 42 === 0) game.obstacles.push({ x: 50 + Math.random() * 800, y: -20, w: 22 }); game.obstacles.forEach(obstacle => obstacle.y += 3.5 * config.speed); game.obstacles = game.obstacles.filter(obstacle => obstacle.y < 530); if (game.obstacles.some(obstacle => Math.abs(obstacle.x - game.player.x) < 35 && Math.abs(obstacle.y - game.player.y) < 35)) finish('Off the track'); else setScore(game.tick / 4); }
+  if (mode === 'dungeon') { if (game.tick % 8 === 0) moveDungeon(); game.enemies.forEach(enemy => { if (game.tick % 24 === 0) enemy.x += Math.sign(game.player.x - enemy.x); if (game.tick % 24 === 0) enemy.y += Math.sign(game.player.y - enemy.y); }); if (game.enemies.some(enemy => enemy.x === game.player.x && enemy.y === game.player.y)) finish('Sentry found you'); }
+  if (mode === 'bubble') { setScore(game.bubbles.length ? score : 100); if (!game.bubbles.length) finish('Cluster cleared'); }
+  if (mode === 'laser') { if (keys.ArrowLeft || keys.a) game.player -= 6; if (keys.ArrowRight || keys.d) game.player += 6; game.player = Math.max(25, Math.min(875, game.player)); game.bullets.forEach(bullet => bullet.y -= 10); if (game.tick % Math.max(18, Math.floor(38 / config.speed)) === 0) game.drones.push({ x: 30 + Math.random() * 840, y: -20 }); game.drones.forEach(drone => drone.y += 2.2 * config.speed); game.bullets.forEach(bullet => game.drones.forEach(drone => { if (Math.abs(bullet.x - drone.x) < 24 && Math.abs(bullet.y - drone.y) < 24) drone.y = 600; })); game.bullets = game.bullets.filter(bullet => bullet.y > -20); game.drones = game.drones.filter(drone => drone.y < 530); if (game.drones.some(drone => drone.y > 430 && Math.abs(drone.x - game.player) < 30)) finish('Lock breached'); else setScore(score); }
+  if (mode === 'orbit') { if (keys.ArrowLeft || keys.a) game.offset -= .035; if (keys.ArrowRight || keys.d) game.offset += .035; game.angle += .018 * config.speed; game.satellites.forEach(satellite => { satellite.angle += .01 * config.speed; if (Math.abs(Math.sin(satellite.angle + game.offset)) < .035) { satellite.hit = true; score += 5; setScore(score); } }); if (game.satellites.every(satellite => satellite.hit)) finish('Orbit secured'); }
+  if (mode === 'stack') { game.current.x += game.current.dir * 4 * config.speed; if (game.current.x < 20 || game.current.x + game.current.w > 880) game.current.dir *= -1; }
+  if (mode === 'color' && timestamp > game.deadline) finish('Signal lost');
+}
+function moveDungeon() { if (keys.ArrowUp || keys.w) game.player.y = Math.max(1, game.player.y - 1); if (keys.ArrowDown || keys.s) game.player.y = Math.min(9, game.player.y + 1); if (keys.ArrowLeft || keys.a) game.player.x = Math.max(1, game.player.x - 1); if (keys.ArrowRight || keys.d) game.player.x = Math.min(15, game.player.x + 1); const index = game.crystals.findIndex(crystal => crystal.x === game.player.x && crystal.y === game.player.y); if (index >= 0) { game.crystals.splice(index, 1); score += 25; setScore(score); } if (!game.crystals.length) finish('Ruins restored'); }
+function nextColor() { const palette = [colors.lime, colors.orange, colors.cyan, '#c18cff']; game.targetColor = palette[Math.floor(Math.random() * palette.length)]; game.options = shuffle(palette.slice()); game.deadline = performance.now() + game.config.time; }
+function fireExtra() { if (mode === 'laser' && running) game.bullets.push({ x: game.player, y: 440 }); if (mode === 'bubble' && running && game.bubbles.length) game.bubbles.pop(); if (mode === 'stack' && running) dropBlock(); }
+function dropBlock() { const previous = game.blocks[game.blocks.length - 1]; const left = Math.max(previous.x, game.current.x); const right = Math.min(previous.x + previous.w, game.current.x + game.current.w); if (right - left < 12) { finish('Stack collapsed'); return; } game.blocks.push({ x: left, w: right - left, y: game.current.y }); score += 10; setScore(score); game.current = { x: 20, w: right - left, y: game.current.y - 50, dir: 1 }; if (game.blocks.length > 8) finish('Skyline complete'); }
+function extraClick(x, y) { if (mode === 'memory' && game.revealed.length < 2 && game.tick > game.flipAt + 35) { const gap = 12, size = 360 / game.size, left = 270, top = 55; const col = Math.floor((x - left) / (size + gap)), row = Math.floor((y - top) / (size + gap)), index = row * game.size + col; if (col >= 0 && col < game.size && row >= 0 && row < game.size && !game.matched.includes(index) && !game.revealed.includes(index)) { game.revealed.push(index); game.flipAt = game.tick; } } if (mode === 'bubble') game.bubbles = game.bubbles.filter(bubble => Math.hypot(x - bubble.x, y - bubble.y) > bubble.r); if (mode === 'stack') dropBlock(); if (mode === 'color') { const index = game.options.findIndex((_, optionIndex) => 170 + optionIndex * 150 < x && x < 290 + optionIndex * 150 && y > 260 && y < 380); if (game.options[index] === game.targetColor) { score += 10; game.round++; setScore(score); if (game.round >= 10) finish('Signal master'); else nextColor(); } else finish('Wrong signal'); } }
+function drawExtra() {
+  background();
+  if (mode === 'meteor') { game.rocks.forEach(rock => { ctx.fillStyle = colors.orange; ctx.beginPath(); ctx.arc(rock.x, rock.y, rock.r, 0, Math.PI * 2); ctx.fill(); }); ctx.fillStyle = colors.cyan; ctx.beginPath(); ctx.moveTo(game.player.x, 390); ctx.lineTo(game.player.x - 24, 445); ctx.lineTo(game.player.x + 24, 445); ctx.closePath(); ctx.fill(); text('METEOR FIELD', 28, 40, 16, colors.muted); }
+  if (mode === 'snake') { const unit = 48; ctx.fillStyle = colors.orange; ctx.fillRect(game.food.x * unit + 5, game.food.y * unit + 5, 38, 38); game.cells.forEach((cell, index) => { ctx.fillStyle = index ? colors.cyan : colors.lime; ctx.fillRect(cell.x * unit + 4, cell.y * unit + 4, 40, 40); }); text('SPARKS ' + Math.floor(score / 10), 28, 40, 16, colors.muted); }
+  if (mode === 'memory') { const gap = 12, size = 360 / game.size, left = 270, top = 55; game.cards.forEach((card, index) => { const col = index % game.size, row = Math.floor(index / game.size), open = game.revealed.includes(index) || game.matched.includes(index); ctx.fillStyle = open ? [colors.lime, colors.orange, colors.cyan, '#c18cff'][card % 4] : '#25342f'; ctx.fillRect(left + col * (size + gap), top + row * (size + gap), size, size); if (open) text(String(card + 1), left + col * (size + gap) + size / 2 - 7, top + row * (size + gap) + size / 2 + 8, 20, '#081012'); }); text('PAIRS ' + game.matched.length / 2 + ' / ' + game.cards.length / 2, 28, 40, 16, colors.muted); }
+  if (mode === 'drift') { ctx.fillStyle = '#182a28'; ctx.fillRect(180, 0, 540, 500); ctx.strokeStyle = colors.lime; ctx.setLineDash([12, 20]); ctx.strokeRect(220, 0, 460, 500); ctx.setLineDash([]); ctx.fillStyle = colors.cyan; ctx.fillRect(game.player.x - 25, game.player.y - 18, 50, 36); game.obstacles.forEach(obstacle => { ctx.fillStyle = colors.orange; ctx.fillRect(obstacle.x - 12, obstacle.y - 16, 24, 32); }); text('LAP DISTANCE ' + Math.floor(score), 28, 40, 16, colors.muted); }
+  if (mode === 'dungeon') { for (let y = 1; y < 10; y++) for (let x = 1; x < 16; x++) { ctx.fillStyle = (x + y) % 2 ? '#142421' : '#19302b'; ctx.fillRect(x * 48, y * 48, 46, 46); } game.crystals.forEach(crystal => { ctx.fillStyle = colors.lime; ctx.fillRect(crystal.x * 48 + 15, crystal.y * 48 + 15, 18, 18); }); game.enemies.forEach(enemy => { ctx.fillStyle = colors.orange; ctx.beginPath(); ctx.arc(enemy.x * 48 + 23, enemy.y * 48 + 23, 15, 0, Math.PI * 2); ctx.fill(); }); ctx.fillStyle = colors.cyan; ctx.fillRect(game.player.x * 48 + 12, game.player.y * 48 + 12, 24, 24); text('CRYSTALS ' + (3 - game.crystals.length) + ' / 3', 28, 40, 16, colors.muted); }
+  if (mode === 'bubble') { game.bubbles.forEach(bubble => { ctx.fillStyle = `hsl(${bubble.hue}, 85%, 65%)`; ctx.beginPath(); ctx.arc(bubble.x, bubble.y, bubble.r, 0, Math.PI * 2); ctx.fill(); ctx.strokeStyle = colors.ink; ctx.stroke(); }); text('BUBBLES ' + game.bubbles.length, 28, 40, 16, colors.muted); }
+  if (mode === 'laser') { ctx.fillStyle = colors.cyan; ctx.fillRect(game.player - 22, 440, 44, 20); ctx.fillStyle = colors.lime; game.bullets.forEach(bullet => ctx.fillRect(bullet.x - 2, bullet.y, 4, 14)); game.drones.forEach(drone => { ctx.fillStyle = colors.orange; ctx.fillRect(drone.x - 18, drone.y - 12, 36, 24); }); text('DRONES ' + game.drones.length, 28, 40, 16, colors.muted); }
+  if (mode === 'orbit') { ctx.strokeStyle = colors.cyan; ctx.beginPath(); ctx.arc(450, 250, 145, 0, Math.PI * 2); ctx.stroke(); ctx.fillStyle = colors.lime; ctx.beginPath(); ctx.arc(450, 250, 24, 0, Math.PI * 2); ctx.fill(); game.satellites.forEach(satellite => { const x = 450 + Math.cos(satellite.angle) * satellite.radius, y = 250 + Math.sin(satellite.angle) * satellite.radius; ctx.fillStyle = satellite.hit ? colors.muted : colors.orange; ctx.fillRect(x - 8, y - 8, 16, 16); }); text('SATELLITES ' + game.satellites.filter(satellite => satellite.hit).length + ' / ' + game.satellites.length, 28, 40, 16, colors.muted); }
+  if (mode === 'stack') { game.blocks.forEach(block => { ctx.fillStyle = colors.cyan; ctx.fillRect(block.x, block.y, block.w, 42); }); ctx.fillStyle = colors.orange; ctx.fillRect(game.current.x, game.current.y, game.current.w, 42); text('LEVEL ' + (game.blocks.length - 1), 28, 40, 16, colors.muted); }
+  if (mode === 'color') { text('MATCH THE SIGNAL', 28, 40, 16, colors.muted); ctx.fillStyle = game.targetColor; ctx.beginPath(); ctx.arc(450, 150, 60, 0, Math.PI * 2); ctx.fill(); game.options.forEach((color, index) => { ctx.fillStyle = color; ctx.fillRect(170 + index * 150, 275, 120, 90); }); text('ROUND ' + game.round + ' / 10', 700, 40, 14, colors.lime); }
+}
+
 function action(name) {
   if (name === 'action') {
     if (mode === 'dash') jump();
@@ -611,6 +688,7 @@ function action(name) {
     if (mode === 'pong') start();
     if (mode === 'hoops') shootHoop();
     if (mode === 'reflex') hitTarget();
+    if (extraModes.includes(mode)) fireExtra();
   }
   if (name === 'left') keys.ArrowLeft = true;
   if (name === 'right') keys.ArrowRight = true;
@@ -627,7 +705,7 @@ difficultyChoices.forEach(button => button.addEventListener('click', () => {
   difficultyChoices.forEach(choice => choice.classList.remove('active'));
   button.classList.add('active');
   difficulty = button.dataset.difficulty;
-  if (mode === 'pong') reset();
+  if (mode === 'pong' || extraModes.includes(mode)) reset();
 }));
 
 startButton.addEventListener('click', () => {
@@ -642,6 +720,7 @@ canvas.addEventListener('click', event => {
   const y = (event.clientY - bounds.top) * canvas.height / bounds.height;
   if (mode === 'hoops') shootHoop();
   if (mode === 'reflex' && game.target && Math.hypot(x - game.target.x, y - game.target.y) <= game.target.radius + 12) hitTarget();
+  if (extraModes.includes(mode)) extraClick(x, y);
 });
 window.addEventListener('keydown', event => {
   keys[event.key] = true;
@@ -652,7 +731,9 @@ window.addEventListener('keydown', event => {
     else if (mode === 'shooter') fire();
     else if (mode === 'hoops') game.charging = true;
     else if (mode === 'reflex') hitTarget();
+    else if (extraModes.includes(mode)) fireExtra();
   }
+  if (mode === 'dungeon' && ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(event.key)) moveDungeon();
   if (event.key.toLowerCase() === 'h') hitBlackjack();
   if (event.key.toLowerCase() === 's') standBlackjack();
   if (event.key === 'Enter' && !running) start();
