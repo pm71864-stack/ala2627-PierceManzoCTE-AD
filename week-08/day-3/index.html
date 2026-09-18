@@ -4,7 +4,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Space  Defender</title>
+  <title>Space Defender</title>
   <style>
     :root {
       --bg: #020507;
@@ -32,9 +32,8 @@
       place-items: center;
       font-family: Arial, Helvetica, sans-serif;
       background:
-        radial-gradient(circle at 50% 0%, rgba(110, 231, 255, 0.12), transparent 25%),
-        radial-gradient(circle at 80% 15%, rgba(124, 156, 255, 0.15), transparent 20%),
-        linear-gradient(180deg, #000000 0%, var(--bg-2) 45%, #02070d 100%);
+        linear-gradient(rgba(2, 5, 7, 0.78), rgba(2, 7, 13, 0.9)),
+        url("https://images.unsplash.com/photo-1462331940025-496dfbfc7564?auto=format&fit=crop&w=2200&q=85") center / cover fixed;
       color: var(--text);
       position: relative;
       overflow: hidden;
@@ -67,6 +66,7 @@
       padding: 24px 18px 28px;
       position: relative;
       z-index: 1;
+      filter: drop-shadow(0 24px 50px rgba(0, 0, 0, 0.35));
     }
 
     .topbar {
@@ -148,7 +148,9 @@
       border-radius: 22px;
       overflow: hidden;
       border: 1px solid rgba(110, 231, 255, 0.2);
-      background: linear-gradient(180deg, rgba(3, 6, 11, 0.96), rgba(9, 18, 31, 0.92));
+      background:
+        linear-gradient(rgba(3, 6, 11, 0.52), rgba(9, 18, 31, 0.7)),
+        url("https://images.unsplash.com/photo-1519608487953-e999c86e7455?auto=format&fit=crop&w=1800&q=80") center / cover;
       box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.03), 0 20px 50px rgba(0, 0, 0, 0.5), inset 0 0 30px rgba(110, 231, 255, 0.08);
     }
 
@@ -157,8 +159,8 @@
       width: 100%;
       height: auto;
       background:
-        radial-gradient(circle at top, rgba(110, 231, 255, 0.06), transparent 30%),
-        linear-gradient(180deg, #050a12 0%, #0a1018 100%);
+        linear-gradient(rgba(5, 10, 18, 0.38), rgba(10, 16, 24, 0.58)),
+        url("https://images.unsplash.com/photo-1534791547706-9f1f96d7e4b5?auto=format&fit=crop&w=1800&q=80") center / cover;
     }
 
     .overlay {
@@ -648,17 +650,17 @@
 
   /* ---- labs ---- */
   var fx = document.getElementById("fx"), ro = document.getElementById("ro"), axis = document.getElementById("axis");
-  var state = {};
+  var labState = {};
   function segWire(onChange) {
     document.querySelectorAll(".seg").forEach(function (seg) {
       var prop = seg.getAttribute("data-prop");
       var pressed = seg.querySelector("[aria-pressed=true]");
-      state[prop] = pressed ? pressed.getAttribute("data-v") : null;
+      labState[prop] = pressed ? pressed.getAttribute("data-v") : null;
       seg.querySelectorAll("button").forEach(function (btn) {
         btn.addEventListener("click", function () {
           seg.querySelectorAll("button").forEach(function (o) { o.setAttribute("aria-pressed", "false"); });
           btn.setAttribute("aria-pressed", "true");
-          state[prop] = btn.getAttribute("data-v");
+          labState[prop] = btn.getAttribute("data-v");
           onChange();
         });
       });
@@ -673,14 +675,14 @@
 
   if (fx && document.querySelector('.seg[data-prop="flex-direction"]')) {
     segWire(function () {
-      fx.style.flexDirection = state["flex-direction"];
-      fx.style.justifyContent = state["justify-content"];
-      fx.style.alignItems = state["align-items"];
+      fx.style.flexDirection = labState["flex-direction"];
+      fx.style.justifyContent = labState["justify-content"];
+      fx.style.alignItems = labState["align-items"];
       ro.innerHTML = ".cards {<br>&nbsp;&nbsp;" + css([
-        ["display", "flex"], ["flex-direction", state["flex-direction"]],
-        ["justify-content", state["justify-content"]], ["align-items", state["align-items"]]
+        ["display", "flex"], ["flex-direction", labState["flex-direction"]],
+        ["justify-content", labState["justify-content"]], ["align-items", labState["align-items"]]
       ]).split("<br>").join("<br>&nbsp;&nbsp;") + "<br>}";
-      var col = state["flex-direction"] === "column";
+      var col = labState["flex-direction"] === "column";
       axis.innerHTML = col
         ? "Direction is <b>column</b>, so the main axis runs <b>down</b>. justify-content is now moving things <b>vertically</b> and align-items is moving them <b>across</b>. They swapped."
         : "Direction is <b>row</b>, so the main axis runs <b>across</b>. justify-content moves things <b>horizontally</b>, align-items moves them <b>vertically</b>.";
@@ -690,7 +692,7 @@
   if (fx && document.querySelector('.seg[data-prop="tool"]')) {
     var b1 = document.getElementById("sb1"), b2 = document.getElementById("sb2"), b3 = document.getElementById("sb3");
     segWire(function () {
-      var n = state["size"] + "px", tool = state["tool"];
+      var n = labState["size"] + "px", tool = labState["tool"];
       fx.style.gap = tool === "gap" ? n : "0px";
       [b1, b2, b3].forEach(function (b) {
         b.style.padding = tool === "padding" ? n : "0.7rem 0.9rem";
@@ -727,13 +729,13 @@
     var cin = document.getElementById("cin");
     var cline = function () {
       var msg = cin.value;
-      return state["quotes"] === "forgot" ? "console.log(" + msg + ");" : 'console.log("' + msg + '");';
+      return labState["quotes"] === "forgot" ? "console.log(" + msg + ");" : 'console.log("' + msg + '");';
     };
     segWire(function () { ro.innerHTML = '<span class="p">// script.js</span><br>' + escH(cline()); });
     cin.addEventListener("input", function () { ro.innerHTML = '<span class="p">// script.js</span><br>' + escH(cline()); });
     document.getElementById("crun").addEventListener("click", function () {
       var msg = cin.value;
-      if (state["quotes"] === "forgot") {
+      if (labState["quotes"] === "forgot") {
         /* the real browser error, not a made-up one: one word is a name nobody defined;
            several words are not even valid code, so the browser stops before running it */
         var parts = msg.trim().split(" ").filter(function (w) { return w.length; });
@@ -756,20 +758,20 @@
     var kb = document.getElementById("cbtn"), kt = document.getElementById("ctext");
     var kcol = ["#3effa0", "#f5c842", "#818cf8", "#f43f5e"], kci = 0, kev = null;
     var kdo = function () {
-      var d = state["does"];
-      if (d === "log") logLine("The button was used (" + state["event"] + ")", false);
+      var d = labState["does"];
+      if (d === "log") logLine("The button was used (" + labState["event"] + ")", false);
       if (d === "text") kt.textContent = "You did it. The page changed.";
       if (d === "colour") { kci = (kci + 1) % kcol.length; kb.style.background = kcol[kci]; kb.style.borderColor = kcol[kci]; }
     };
     segWire(function () {
       if (kev) kb.removeEventListener(kev, kdo);
-      kev = state["event"]; kb.addEventListener(kev, kdo);
+      kev = labState["event"]; kb.addEventListener(kev, kdo);
       kt.textContent = "Nothing has happened yet."; kb.style.background = ""; kb.style.borderColor = "";
-      var inner = state["does"] === "log" ? 'console.log("The button was used");'
-        : state["does"] === "text" ? 'output.textContent = "You did it. The page changed.";'
+      var inner = labState["does"] === "log" ? 'console.log("The button was used");'
+        : labState["does"] === "text" ? 'output.textContent = "You did it. The page changed.";'
           : 'button.style.background = "gold";';
       var lines = ['const button = document.querySelector("#action");'];
-      if (state["does"] === "text") lines.push('const output = document.querySelector("#output");');
+      if (labState["does"] === "text") lines.push('const output = document.querySelector("#output");');
       lines.push("");
       lines.push('button.addEventListener("' + kev + '", function () {');
       ro.innerHTML = lines.map(escH).join("<br>") + "<br>&nbsp;&nbsp;" + escH(inner) + "<br>" + escH("});");
@@ -783,7 +785,7 @@
     var sb = document.getElementById("sbtn"), sv = document.getElementById("sval");
     var count = 0, isOn = false, spot = 0, msgs = ["Go team!", "Practice starts at 3", "Big game Friday"];
     var sdraw = function () {
-      var f = state["feature"], code = [];
+      var f = labState["feature"], code = [];
       if (f === "counter") {
         sv.textContent = String(count); sb.textContent = "Add one";
         code = ["let count = " + count + ";", "", "function addOne() {", "  count = count + 1;", "  output.textContent = count;", "}", "", 'button.addEventListener("click", addOne);'];
@@ -799,7 +801,7 @@
       ro.innerHTML = code.map(function (l) { return escH(l).split("  ").join("&nbsp;&nbsp;"); }).join("<br>");
     };
     sb.addEventListener("click", function () {
-      var f = state["feature"];
+      var f = labState["feature"];
       if (f === "counter") count = count + 1;
       if (f === "toggle") isOn = !isOn;
       if (f === "messages") spot = (spot + 1) % msgs.length;
