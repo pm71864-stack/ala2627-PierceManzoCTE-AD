@@ -17,16 +17,14 @@
   <main class="vault-shell">
     <header class="topbar">
       <a class="back-link" href="../">← Main site</a>
-      <div class="vault-mark"><span>THE</span> VAULT <b>ARCADE / 03</b></div>
+      <div class="vault-mark"><span>THE</span> VAULT <b>ARCADE / 06</b></div>
       <span class="status"><i></i> LIVE</span>
     </header>
 
     <section class="intro">
-      <p class="kicker">Choose your challenge</p>
-      <h1>Three ways<br><em>to play.</em></h1>
-      <p class="intro-copy"><span class="copy-index">[ PLAYLIST_03 ]</span> Step inside the Vault. Pick a game, chase a
-        high score, and press restart whenever you want
-        another run.</p>
+      <p class="kicker">The Game Vault</p>
+      <h1>Six games<br><em>to play.</em></h1>
+      <p class="intro-copy"><span class="copy-index">[ PLAYLIST_06 ]</span> The perfect 6 games for you, made by me.</p>
     </section>
 
     <nav class="game-select" aria-label="Choose a game">
@@ -36,6 +34,12 @@
           class="choice-number">02</span><strong>Starfall</strong><small>Clear the sky</small></button>
       <button class="game-choice" data-game="pong"><span class="choice-number">03</span><strong>Pixel
           Pong</strong><small>Own the rally</small></button>
+      <button class="game-choice" data-game="hoops"><span class="choice-number">04</span><strong>Street
+          Hoops</strong><small>Find your rhythm</small></button>
+      <button class="game-choice" data-game="blackjack"><span class="choice-number">05</span><strong>Blackjack
+          21</strong><small>Beat the dealer</small></button>
+      <button class="game-choice" data-game="reflex"><span class="choice-number">06</span><strong>Reflex
+          Grid</strong><small>Test your timing</small></button>
     </nav>
 
     <section class="arcade" aria-labelledby="game-title">
@@ -44,7 +48,7 @@
           <p class="game-label" id="game-label">01 / NEON DASH</p>
           <h2 id="game-title">Neon Dash</h2>
         </div>
-        <div class="score-box"><span>SCORE</span><strong id="score">0000</strong></div>
+        <div class="score-box"><span id="score-label">SCORE</span><strong id="score">0000</strong></div>
       </div>
       <div class="difficulty-panel" id="difficulty-panel" hidden>
         <span>DIFFICULTY</span>
@@ -65,7 +69,7 @@
     </section>
     <footer><span>THE VAULT / 2026</span><span>Built for replay value</span></footer>
   </main>
-  <script src="script.js"></script>
+  <script src="arcade.js"></script>
 </body>
 
 </html>

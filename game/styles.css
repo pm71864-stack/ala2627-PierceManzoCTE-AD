@@ -237,6 +237,54 @@ body {
   color: var(--lime)
 }
 
+.blackjack-buttons {
+  display: inline-flex;
+  gap: 7px;
+  margin-right: auto
+}
+
+.chip-label {
+  color: var(--muted);
+  font: .6rem var(--mono);
+  letter-spacing: .08em;
+  align-self: center
+}
+
+.blackjack-buttons button {
+  border: 1px solid var(--line);
+  background: rgba(213, 243, 107, .08);
+  color: var(--lime);
+  padding: 8px 12px;
+  cursor: pointer;
+  font: .63rem var(--mono);
+  letter-spacing: .08em;
+  text-transform: uppercase
+}
+
+.blackjack-buttons button:hover:not(:disabled) {
+  background: var(--lime);
+  color: #141710
+}
+
+.blackjack-buttons [data-card-action] {
+  display: none
+}
+
+.blackjack-buttons.hand-active [data-card-action] {
+  display: inline-block
+}
+
+.blackjack-buttons button.selected {
+  background: var(--orange);
+  border-color: var(--orange);
+  color: #17120f
+}
+
+.blackjack-buttons button:disabled {
+  cursor: not-allowed;
+  opacity: .45
+}
+
 .arcade h2 {
   font-size: 2rem;
   margin: 0
@@ -375,6 +423,7 @@ footer {
   }
 
   .game-select {
+    grid-template-columns: repeat(2, 1fr);
     gap: 6px
   }
 
