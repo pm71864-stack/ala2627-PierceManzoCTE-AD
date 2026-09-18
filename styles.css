@@ -23,7 +23,7 @@ html {
 
 body {
   margin: 0;
-  background: var(--paper);
+  background: linear-gradient(rgba(5, 7, 10, .72), rgba(5, 7, 10, .9)), url("https://images.unsplash.com/photo-1462331940025-496dfbfc7564?auto=format&fit=crop&w=2200&q=85") center/cover fixed;
   color: var(--ink);
   font: 1rem/1.55 var(--sans);
   position: relative;
@@ -271,6 +271,10 @@ h2 em {
   padding: 6.5rem 0 8rem;
 }
 
+.about-section {
+  background: linear-gradient(90deg, rgba(5, 7, 10, .82), rgba(5, 7, 10, .54)), url("https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?auto=format&fit=crop&w=1600&q=80") center/cover;
+}
+
 .section-label {
   display: flex;
   gap: .7rem;
@@ -423,6 +427,10 @@ h2 span {
   gap: 5rem;
 }
 
+.work-section {
+  background: linear-gradient(90deg, rgba(5, 7, 10, .9), rgba(5, 7, 10, .58)), url("https://images.unsplash.com/photo-1534791547706-9f1f96d7e4b5?auto=format&fit=crop&w=1600&q=80") center/cover;
+}
+
 .focus-list {
   padding-top: .4rem;
 }
@@ -454,7 +462,7 @@ h2 span {
 .connect-section {
   margin: 0 calc((100vw - min(100vw - 3rem, 76rem)) / -2);
   padding: 8rem max(1.5rem, calc((100vw - 76rem) / 2));
-  background: linear-gradient(145deg, #0a1118, #030507);
+  background: linear-gradient(145deg, rgba(10, 17, 24, .82), rgba(3, 5, 7, .94)), url("https://images.unsplash.com/photo-1500534623283-312aade485b7?auto=format&fit=crop&w=1800&q=80") center/cover;
   color: var(--ink);
   border-top: 1px solid var(--line);
   border-bottom: 1px solid var(--line);
