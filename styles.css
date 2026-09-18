@@ -100,12 +100,32 @@ nav a:hover,
 }
 
 .hero {
+  position: relative;
+  isolation: isolate;
   display: grid;
   grid-template-columns: minmax(0, 1.35fr) minmax(17rem, .65fr);
   align-items: end;
   gap: 4rem;
   min-height: 43rem;
   padding: 6.5rem 0 7rem;
+}
+
+.hero::before {
+  position: absolute;
+  z-index: -1;
+  inset: 1rem -8rem 0 18%;
+  border: 1px solid rgba(110, 231, 255, .18);
+  background: linear-gradient(90deg, rgba(5, 7, 10, .96) 0%, rgba(5, 7, 10, .64) 48%, rgba(5, 7, 10, .2) 100%), url("https://images.unsplash.com/photo-1462331940025-496dfbfc7564?auto=format&fit=crop&w=1800&q=85") center/cover;
+  box-shadow: 0 2rem 6rem rgba(0, 0, 0, .42);
+  content: "";
+  opacity: .86;
+  transform: skewY(-2deg);
+}
+
+.hero-copy,
+.hero-note {
+  position: relative;
+  z-index: 1;
 }
 
 .eyebrow,
@@ -299,7 +319,7 @@ h2 span {
 .assignments-section {
   margin: 0 calc((100vw - min(100vw - 3rem, 76rem)) / -2);
   padding: 7rem max(1.5rem, calc((100vw - 76rem) / 2));
-  background: rgba(10, 14, 19, .78);
+  background: linear-gradient(90deg, rgba(10, 14, 19, .96), rgba(10, 14, 19, .72)), url("https://images.unsplash.com/photo-1519608487953-e999c86e7455?auto=format&fit=crop&w=1800&q=80") center/cover fixed;
   border-top: 1px solid var(--line);
   border-bottom: 1px solid var(--line);
 }

@@ -17,8 +17,7 @@
 
 body {
   margin: 0;
-  background: linear-gradient(135deg, rgba(213, 243, 107, .035) 0 1px, transparent 1px 100%), radial-gradient(circle at 8% 8%, #30271f 0, transparent 26%), radial-gradient(circle at 92% 84%, #152d2c 0, transparent 30%), var(--bg);
-  background-size: 34px 34px, auto, auto, auto;
+  background: linear-gradient(135deg, rgba(17, 17, 15, .93), rgba(17, 17, 15, .98)), url("https://images.unsplash.com/photo-1462331940025-496dfbfc7564?auto=format&fit=crop&w=1800&q=80") center/cover fixed;
   color: var(--ink);
   font-family: var(--display);
   min-height: 100vh;
