@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#090b10">
+  <title>Learning Hub | Pierce Manzo</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600;700&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+  <header class="hub-header">
+    <a class="brand" href="../" aria-label="Back to Pierce Manzo home"><span class="brand-mark">PM</span><span>Learning
+        Hub</span></a>
+    <nav class="top-nav" aria-label="Hub navigation">
+      <button class="nav-tab active" data-filter="all">All resources</button>
+      <button class="nav-tab" data-filter="study">Study</button>
+      <button class="nav-tab" data-filter="create">Create</button>
+      <button class="nav-tab" data-filter="play">Play</button>
+    </nav>
+    <a class="back-link" href="../">Portfolio <span aria-hidden="true">↗</span></a>
+  </header>
+
+  <main class="hub-main">
+    <section class="hub-intro" aria-labelledby="hub-title">
+      <div>
+        <p class="eyebrow"><span class="pulse"></span> Personal resource launcher</p>
+        <h1 id="hub-title">Make learning<br><em>feel more useful.</em></h1>
+        <p class="intro-copy">A focused collection of tools, references, and small experiments for the next thing you
+          want to understand.</p>
+      </div>
+      <aside class="progress-card">
+        <span class="card-kicker">TODAY'S SIGNAL</span>
+        <strong>Keep exploring.</strong>
+        <p>Open a resource to add it to your recent list.</p>
+        <span class="progress-line"><i></i></span>
+      </aside>
+    </section>
+
+    <section class="workspace" aria-label="Learning resources">
+      <div class="workspace-bar">
+        <div>
+          <p class="section-kicker">Resource shelf</p>
+          <h2 id="shelf-title">Everything in one place</h2>
+        </div>
+        <label class="search-box"><span aria-hidden="true">⌕</span><input id="resource-search" type="search"
+            placeholder="Search resources" autocomplete="off"></label>
+      </div>
+      <div class="resource-grid" id="resource-grid">
+        <a class="resource-card featured" href="../game/" data-category="play" data-name="The Game Vault"
+          data-resource="Game Vault">
+          <span class="resource-icon icon-arcade" aria-hidden="true">✦</span><span class="resource-meta">PLAY ·
+            INTERACTIVE</span><strong>The Game Vault</strong>
+          <p>Sixteen arcade experiments with adjustable difficulty.</p><span class="launch">Open resource ↗</span>
+        </a>
+        <a class="resource-card" href="../nebulabrowser/" data-category="create" data-name="Nebula Browser"
+          data-resource="Nebula Browser">
+          <span class="resource-icon icon-nebula" aria-hidden="true">◌</span><span class="resource-meta">CREATE · WEB
+            LAB</span><strong>Nebula Browser</strong>
+          <p>A space to explore digital tools for learning.</p><span class="launch">Open resource ↗</span>
+        </a>
+        <a class="resource-card" href="https://www.khanacademy.org/" target="_blank" rel="noreferrer"
+          data-category="study" data-name="Khan Academy" data-resource="Khan Academy">
+          <span class="resource-icon icon-study" aria-hidden="true">↗</span><span class="resource-meta">STUDY ·
+            PRACTICE</span><strong>Khan Academy</strong>
+          <p>Practice lessons for math, science, and more.</p><span class="launch">Open external resource ↗</span>
+        </a>
+        <a class="resource-card" href="https://developer.mozilla.org/en-US/" target="_blank" rel="noreferrer"
+          data-category="create" data-name="MDN Web Docs" data-resource="MDN Web Docs">
+          <span class="resource-icon icon-code" aria-hidden="true">&lt;/&gt;</span><span class="resource-meta">CREATE ·
+            REFERENCE</span><strong>MDN Web Docs</strong>
+          <p>Reliable references for building on the web.</p><span class="launch">Open external resource ↗</span>
+        </a>
+        <a class="resource-card" href="https://www.desmos.com/calculator" target="_blank" rel="noreferrer"
+          data-category="study" data-name="Desmos Graphing" data-resource="Desmos Graphing">
+          <span class="resource-icon icon-graph" aria-hidden="true">∿</span><span class="resource-meta">STUDY ·
+            VISUALIZE</span><strong>Desmos Graphing</strong>
+          <p>See equations move and test ideas visually.</p><span class="launch">Open external resource ↗</span>
+        </a>
+        <a class="resource-card" href="https://www.typingclub.com/" target="_blank" rel="noreferrer"
+          data-category="play" data-name="Typing Club" data-resource="Typing Club">
+          <span class="resource-icon icon-type" aria-hidden="true">Aa</span><span class="resource-meta">PLAY ·
+            SKILL</span><strong>Typing Club</strong>
+          <p>Build speed and accuracy one short session at a time.</p><span class="launch">Open external resource
+            ↗</span>
+        </a>
+      </div>
+      <p class="empty-state" id="empty-state" hidden>No resources match that search.</p>
+    </section>
+
+    <section class="recent-section" aria-labelledby="recent-title">
+      <div class="section-heading">
+        <p class="section-kicker">Keep the thread</p>
+        <h2 id="recent-title">Recently opened</h2>
+      </div>
+      <div class="recent-list" id="recent-list">
+        <p class="recent-empty">Your recent resources will appear here.</p>
+      </div>
+    </section>
+  </main>
+  <footer class="hub-footer"><span>LEARNING HUB / 2026</span><span>Built for curious people</span></footer>
+  <script src="script.js"></script>
+</body>
+
+</html>
