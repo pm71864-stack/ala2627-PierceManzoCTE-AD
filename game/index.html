@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>The Vault Arcade</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+  <main class="vault-shell">
+    <header class="topbar">
+      <a class="back-link" href="../">← Main site</a>
+      <div class="vault-mark"><span>THE</span> VAULT <b>ARCADE</b></div>
+      <span class="status"><i></i> LIVE</span>
+    </header>
+
+    <section class="intro">
+      <p class="kicker">Choose your challenge</p>
+      <h1>Three ways<br><em>to play.</em></h1>
+      <p class="intro-copy">Step inside the Vault. Pick a game, chase a high score, and press restart whenever you want
+        another run.</p>
+    </section>
+
+    <nav class="game-select" aria-label="Choose a game">
+      <button class="game-choice active" data-game="dash"><span class="choice-number">01</span><strong>Neon
+          Dash</strong><small>Jump the beat</small></button>
+      <button class="game-choice" data-game="shooter"><span
+          class="choice-number">02</span><strong>Starfall</strong><small>Clear the sky</small></button>
+      <button class="game-choice" data-game="pong"><span class="choice-number">03</span><strong>Pixel
+          Pong</strong><small>Own the rally</small></button>
+    </nav>
+
+    <section class="arcade" aria-labelledby="game-title">
+      <div class="arcade-head">
+        <div>
+          <p class="game-label" id="game-label">01 / NEON DASH</p>
+          <h2 id="game-title">Neon Dash</h2>
+        </div>
+        <div class="score-box"><span>SCORE</span><strong id="score">0000</strong></div>
+      </div>
+      <div class="canvas-wrap"><canvas id="game-canvas" width="900" height="500" aria-label="Game screen"></canvas>
+        <div class="start-card" id="start-card"><span class="start-icon">✦</span>
+          <h3 id="start-title">Ready to run?</h3>
+          <p id="start-copy">Press the button or hit Space to jump.</p><button id="start-button">Start game</button>
+        </div>
+      </div>
+      <div class="controls"><span id="controls-copy">SPACE / CLICK — JUMP</span><button class="restart"
+          id="restart-button">↻ Restart</button></div>
+      <div class="touch-controls" aria-label="Touch controls"><button data-action="left">←</button><button
+          data-action="action">●</button><button data-action="right">→</button></div>
+    </section>
+    <footer><span>THE VAULT / 2026</span><span>Built for replay value</span></footer>
+  </main>
+  <script src="script.js"></script>
+</body>
+
+</html>

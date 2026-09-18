@@ -1,0 +1,368 @@
+:root {
+  --ink: #f4f0e8;
+  --muted: #a8a59e;
+  --bg: #11100e;
+  --panel: #1b1a17;
+  --line: #393731;
+  --lime: #d5f36b;
+  --orange: #ff7a59;
+  --cyan: #6de8e0
+}
+
+* {
+  box-sizing: border-box
+}
+
+body {
+  margin: 0;
+  background: radial-gradient(circle at 12% 12%, #30261f 0, transparent 28%), radial-gradient(circle at 85% 80%, #172b2b 0, transparent 30%), var(--bg);
+  color: var(--ink);
+  font-family: "Trebuchet MS", Arial, sans-serif;
+  min-height: 100vh
+}
+
+.vault-shell {
+  width: min(1120px, 92vw);
+  margin: auto;
+  padding: 28px 0 32px
+}
+
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 18px
+}
+
+.back-link {
+  color: var(--muted);
+  text-decoration: none;
+  font-size: .78rem;
+  letter-spacing: .1em;
+  text-transform: uppercase
+}
+
+.back-link:hover {
+  color: var(--lime)
+}
+
+.vault-mark {
+  font-weight: 900;
+  letter-spacing: .14em;
+  font-size: 1.05rem
+}
+
+.vault-mark span {
+  color: var(--lime);
+  font-size: .63rem;
+  vertical-align: top
+}
+
+.vault-mark b {
+  color: var(--muted);
+  font-size: .58rem;
+  letter-spacing: .08em
+}
+
+.status {
+  font-size: .68rem;
+  letter-spacing: .14em;
+  color: var(--muted)
+}
+
+.status i {
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  background: var(--lime);
+  border-radius: 50%;
+  margin-right: 6px
+}
+
+.intro {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 30px;
+  align-items: end;
+  padding: 70px 0 40px
+}
+
+.kicker,
+.game-label {
+  color: var(--lime);
+  font-size: .72rem;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  margin: 0 0 14px
+}
+
+.intro h1 {
+  font-size: clamp(3rem, 7vw, 6.6rem);
+  line-height: .84;
+  letter-spacing: -.07em;
+  margin: 0
+}
+
+.intro h1 em {
+  color: var(--orange);
+  font-style: normal
+}
+
+.intro-copy {
+  max-width: 330px;
+  color: var(--muted);
+  line-height: 1.6;
+  margin: 0 0 6px
+}
+
+.game-select {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-bottom: 24px
+}
+
+.game-choice {
+  appearance: none;
+  text-align: left;
+  color: var(--ink);
+  background: rgba(27, 26, 23, .82);
+  border: 1px solid var(--line);
+  padding: 17px 18px;
+  cursor: pointer;
+  transition: .2s transform, .2s border-color, .2s background;
+  min-height: 96px
+}
+
+.game-choice:hover,
+.game-choice.active {
+  border-color: var(--lime);
+  background: #25251e;
+  transform: translateY(-3px)
+}
+
+.choice-number {
+  display: block;
+  color: var(--orange);
+  font-size: .68rem;
+  letter-spacing: .15em;
+  margin-bottom: 13px
+}
+
+.game-choice strong {
+  display: block;
+  font-size: 1.04rem
+}
+
+.game-choice small {
+  display: block;
+  color: var(--muted);
+  margin-top: 5px
+}
+
+.arcade {
+  border: 1px solid var(--line);
+  background: rgba(18, 18, 16, .86);
+  padding: 24px
+}
+
+.arcade-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: start;
+  margin-bottom: 18px
+}
+
+.arcade h2 {
+  font-size: 2rem;
+  margin: 0
+}
+
+.game-label {
+  margin-bottom: 8px
+}
+
+.score-box {
+  text-align: right
+}
+
+.score-box span {
+  display: block;
+  color: var(--muted);
+  font-size: .6rem;
+  letter-spacing: .16em
+}
+
+.score-box strong {
+  color: var(--lime);
+  font: 1.8rem monospace
+}
+
+.canvas-wrap {
+  position: relative;
+  background: #0a1011;
+  border: 1px solid #2e3d3a;
+  overflow: hidden
+}
+
+.canvas-wrap canvas {
+  display: block;
+  width: 100%;
+  height: auto;
+  image-rendering: auto
+}
+
+.start-card {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-content: center;
+  text-align: center;
+  background: rgba(8, 12, 12, .7);
+  backdrop-filter: blur(3px)
+}
+
+.start-card.hidden {
+  display: none
+}
+
+.start-icon {
+  color: var(--lime);
+  font-size: 2rem
+}
+
+.start-card h3 {
+  font-size: 1.7rem;
+  margin: 8px 0
+}
+
+.start-card p {
+  color: var(--muted);
+  margin: 0 0 20px
+}
+
+.start-card button,
+.restart {
+  border: 0;
+  background: var(--lime);
+  color: #141710;
+  font-weight: bold;
+  padding: 12px 18px;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: .08em
+}
+
+.start-card button:hover {
+  background: #efffa9
+}
+
+.controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 15px;
+  color: var(--muted);
+  font-size: .68rem;
+  letter-spacing: .12em
+}
+
+.restart {
+  background: transparent;
+  color: var(--ink);
+  border: 1px solid var(--line);
+  padding: 9px 13px
+}
+
+.restart:hover {
+  border-color: var(--lime);
+  color: var(--lime)
+}
+
+.touch-controls {
+  display: none
+}
+
+footer {
+  display: flex;
+  justify-content: space-between;
+  color: #716f68;
+  font-size: .65rem;
+  letter-spacing: .12em;
+  padding-top: 24px
+}
+
+@media(max-width:700px) {
+  .vault-shell {
+    width: 94vw;
+    padding-top: 18px
+  }
+
+  .intro {
+    grid-template-columns: 1fr;
+    padding: 48px 0 28px;
+    gap: 20px
+  }
+
+  .intro h1 {
+    font-size: 4.3rem
+  }
+
+  .game-select {
+    gap: 6px
+  }
+
+  .game-choice {
+    padding: 12px 10px;
+    min-height: 90px
+  }
+
+  .choice-number {
+    margin-bottom: 9px
+  }
+
+  .game-choice strong {
+    font-size: .88rem
+  }
+
+  .game-choice small {
+    font-size: .68rem
+  }
+
+  .arcade {
+    padding: 13px
+  }
+
+  .arcade h2 {
+    font-size: 1.5rem
+  }
+
+  .controls {
+    font-size: .58rem
+  }
+
+  .touch-controls {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    padding-top: 14px
+  }
+
+  .touch-controls button {
+    width: 58px;
+    height: 40px;
+    background: #282b26;
+    border: 1px solid var(--line);
+    color: var(--ink);
+    font-size: 1rem
+  }
+
+  .topbar .status {
+    display: none
+  }
+
+  footer {
+    font-size: .55rem
+  }
+}
