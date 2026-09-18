@@ -667,17 +667,125 @@ function nextColor() { const palette = [colors.lime, colors.orange, colors.cyan,
 function fireExtra() { if (mode === 'laser' && running) game.bullets.push({ x: game.player, y: 440 }); if (mode === 'bubble' && running && game.bubbles.length) game.bubbles.pop(); if (mode === 'stack' && running) dropBlock(); }
 function dropBlock() { const previous = game.blocks[game.blocks.length - 1]; const left = Math.max(previous.x, game.current.x); const right = Math.min(previous.x + previous.w, game.current.x + game.current.w); if (right - left < 12) { finish('Stack collapsed'); return; } game.blocks.push({ x: left, w: right - left, y: game.current.y }); score += 10; setScore(score); game.current = { x: 20, w: right - left, y: game.current.y - 50, dir: 1 }; if (game.blocks.length > 8) finish('Skyline complete'); }
 function extraClick(x, y) { if (mode === 'memory' && game.revealed.length < 2 && game.tick > game.flipAt + 35) { const gap = 12, size = 360 / game.size, left = 270, top = 55; const col = Math.floor((x - left) / (size + gap)), row = Math.floor((y - top) / (size + gap)), index = row * game.size + col; if (col >= 0 && col < game.size && row >= 0 && row < game.size && !game.matched.includes(index) && !game.revealed.includes(index)) { game.revealed.push(index); game.flipAt = game.tick; } } if (mode === 'bubble') game.bubbles = game.bubbles.filter(bubble => Math.hypot(x - bubble.x, y - bubble.y) > bubble.r); if (mode === 'stack') dropBlock(); if (mode === 'color') { const index = game.options.findIndex((_, optionIndex) => 170 + optionIndex * 150 < x && x < 290 + optionIndex * 150 && y > 260 && y < 380); if (game.options[index] === game.targetColor) { score += 10; game.round++; setScore(score); if (game.round >= 10) finish('Signal master'); else nextColor(); } else finish('Wrong signal'); } }
+function glow(color, blur = 16) { ctx.shadowColor = color; ctx.shadowBlur = blur; }
+function clearGlow() { ctx.shadowBlur = 0; }
+function roundedRect(x, y, width, height, radius) { ctx.beginPath(); ctx.roundRect(x, y, width, height, radius); ctx.fill(); }
+function drawCar(x, y, color) {
+  glow(color, 18);
+  ctx.fillStyle = color;
+  ctx.beginPath();
+  ctx.moveTo(x - 32, y + 20);
+  ctx.lineTo(x - 24, y - 13);
+  ctx.quadraticCurveTo(x - 15, y - 30, x + 5, y - 30);
+  ctx.lineTo(x + 24, y - 12);
+  ctx.lineTo(x + 34, y + 20);
+  ctx.closePath();
+  ctx.fill();
+  clearGlow();
+  ctx.fillStyle = '#122124';
+  ctx.beginPath();
+  ctx.moveTo(x - 15, y - 12);
+  ctx.lineTo(x - 8, y - 24);
+  ctx.lineTo(x + 4, y - 24);
+  ctx.lineTo(x + 16, y - 11);
+  ctx.closePath();
+  ctx.fill();
+  ctx.fillStyle = '#f8f4d8';
+  ctx.fillRect(x - 27, y + 3, 7, 5);
+  ctx.fillRect(x + 20, y + 3, 7, 5);
+  ctx.fillStyle = '#101416';
+  ctx.fillRect(x - 27, y - 5, 8, 8);
+  ctx.fillRect(x + 19, y - 5, 8, 8);
+}
+function drawSnakeSegment(cell, index, unit) {
+  const x = cell.x * unit + 6;
+  const y = cell.y * unit + 6;
+  const radius = index ? 15 : 18;
+  glow(index ? colors.cyan : colors.lime, index ? 10 : 20);
+  ctx.fillStyle = index ? '#2bb8b5' : colors.lime;
+  ctx.beginPath();
+  ctx.arc(x + 18, y + 18, radius, 0, Math.PI * 2);
+  ctx.fill();
+  clearGlow();
+  ctx.strokeStyle = index ? '#8af9ed' : '#f7ffb2';
+  ctx.lineWidth = 2;
+  ctx.stroke();
+  if (!index) {
+    const eyeX = game.dir.x >= 0 ? x + 27 : x + 9;
+    const eyeY = game.dir.y > 0 ? y + 27 : y + 12;
+    ctx.fillStyle = '#09201e';
+    ctx.beginPath();
+    ctx.arc(eyeX, eyeY, 3, 0, Math.PI * 2);
+    ctx.arc(eyeX, eyeY + (game.dir.y ? 0 : 9), 3, 0, Math.PI * 2);
+    ctx.fill();
+  }
+}
+function drawMeteorShip(x, y) {
+  glow(colors.cyan, 22);
+  ctx.fillStyle = colors.cyan;
+  ctx.beginPath();
+  ctx.moveTo(x, y - 28);
+  ctx.lineTo(x - 28, y + 24);
+  ctx.lineTo(x - 8, y + 17);
+  ctx.lineTo(x, y + 30);
+  ctx.lineTo(x + 8, y + 17);
+  ctx.lineTo(x + 28, y + 24);
+  ctx.closePath();
+  ctx.fill();
+  clearGlow();
+  ctx.fillStyle = '#132f35';
+  ctx.beginPath();
+  ctx.arc(x, y - 7, 9, Math.PI, 0);
+  ctx.fill();
+  ctx.fillStyle = colors.orange;
+  ctx.fillRect(x - 11, y + 24, 7, 13);
+  ctx.fillRect(x + 4, y + 24, 7, 13);
+}
+function drawDrone(x, y, color = colors.orange) {
+  glow(color, 15);
+  ctx.fillStyle = color;
+  ctx.beginPath();
+  ctx.moveTo(x - 25, y - 5);
+  ctx.lineTo(x - 12, y - 18);
+  ctx.lineTo(x + 12, y - 18);
+  ctx.lineTo(x + 25, y - 5);
+  ctx.lineTo(x + 12, y + 14);
+  ctx.lineTo(x - 12, y + 14);
+  ctx.closePath();
+  ctx.fill();
+  clearGlow();
+  ctx.fillStyle = '#171b24';
+  ctx.fillRect(x - 9, y - 4, 18, 9);
+  ctx.fillStyle = colors.lime;
+  ctx.fillRect(x - 18, y + 7, 5, 3);
+  ctx.fillRect(x + 13, y + 7, 5, 3);
+}
+function drawCrystal(x, y, size = 18) {
+  glow(colors.lime, 18);
+  ctx.fillStyle = colors.lime;
+  ctx.beginPath();
+  ctx.moveTo(x, y - size);
+  ctx.lineTo(x + size * .65, y - size * .25);
+  ctx.lineTo(x + size * .4, y + size);
+  ctx.lineTo(x - size * .4, y + size);
+  ctx.lineTo(x - size * .65, y - size * .25);
+  ctx.closePath();
+  ctx.fill();
+  clearGlow();
+  ctx.strokeStyle = '#f7ffb2';
+  ctx.stroke();
+}
 function drawExtra() {
   background();
-  if (mode === 'meteor') { game.rocks.forEach(rock => { ctx.fillStyle = colors.orange; ctx.beginPath(); ctx.arc(rock.x, rock.y, rock.r, 0, Math.PI * 2); ctx.fill(); }); ctx.fillStyle = colors.cyan; ctx.beginPath(); ctx.moveTo(game.player.x, 390); ctx.lineTo(game.player.x - 24, 445); ctx.lineTo(game.player.x + 24, 445); ctx.closePath(); ctx.fill(); text('METEOR FIELD', 28, 40, 16, colors.muted); }
-  if (mode === 'snake') { const unit = 48; ctx.fillStyle = colors.orange; ctx.fillRect(game.food.x * unit + 5, game.food.y * unit + 5, 38, 38); game.cells.forEach((cell, index) => { ctx.fillStyle = index ? colors.cyan : colors.lime; ctx.fillRect(cell.x * unit + 4, cell.y * unit + 4, 40, 40); }); text('SPARKS ' + Math.floor(score / 10), 28, 40, 16, colors.muted); }
+  if (mode === 'meteor') { game.rocks.forEach(rock => { ctx.fillStyle = '#a84942'; ctx.beginPath(); ctx.arc(rock.x, rock.y, rock.r, 0, Math.PI * 2); ctx.fill(); ctx.fillStyle = '#e2805a'; ctx.beginPath(); ctx.arc(rock.x - rock.r * .28, rock.y - rock.r * .25, rock.r * .22, 0, Math.PI * 2); ctx.fill(); }); drawMeteorShip(game.player.x, game.player.y); text('METEOR FIELD', 28, 40, 16, colors.muted); }
+  if (mode === 'snake') { const unit = 48; glow(colors.orange, 18); ctx.fillStyle = colors.orange; ctx.beginPath(); ctx.arc(game.food.x * unit + 24, game.food.y * unit + 24, 13, 0, Math.PI * 2); ctx.fill(); clearGlow(); ctx.fillStyle = '#ffd59c'; ctx.beginPath(); ctx.arc(game.food.x * unit + 19, game.food.y * unit + 19, 4, 0, Math.PI * 2); ctx.fill(); game.cells.forEach((cell, index) => drawSnakeSegment(cell, index, unit)); text('SPARKS ' + Math.floor(score / 10), 28, 40, 16, colors.muted); }
   if (mode === 'memory') { const gap = 12, size = 360 / game.size, left = 270, top = 55; game.cards.forEach((card, index) => { const col = index % game.size, row = Math.floor(index / game.size), open = game.revealed.includes(index) || game.matched.includes(index); ctx.fillStyle = open ? [colors.lime, colors.orange, colors.cyan, '#c18cff'][card % 4] : '#25342f'; ctx.fillRect(left + col * (size + gap), top + row * (size + gap), size, size); if (open) text(String(card + 1), left + col * (size + gap) + size / 2 - 7, top + row * (size + gap) + size / 2 + 8, 20, '#081012'); }); text('PAIRS ' + game.matched.length / 2 + ' / ' + game.cards.length / 2, 28, 40, 16, colors.muted); }
-  if (mode === 'drift') { ctx.fillStyle = '#182a28'; ctx.fillRect(180, 0, 540, 500); ctx.strokeStyle = colors.lime; ctx.setLineDash([12, 20]); ctx.strokeRect(220, 0, 460, 500); ctx.setLineDash([]); ctx.fillStyle = colors.cyan; ctx.fillRect(game.player.x - 25, game.player.y - 18, 50, 36); game.obstacles.forEach(obstacle => { ctx.fillStyle = colors.orange; ctx.fillRect(obstacle.x - 12, obstacle.y - 16, 24, 32); }); text('LAP DISTANCE ' + Math.floor(score), 28, 40, 16, colors.muted); }
-  if (mode === 'dungeon') { for (let y = 1; y < 10; y++) for (let x = 1; x < 16; x++) { ctx.fillStyle = (x + y) % 2 ? '#142421' : '#19302b'; ctx.fillRect(x * 48, y * 48, 46, 46); } game.crystals.forEach(crystal => { ctx.fillStyle = colors.lime; ctx.fillRect(crystal.x * 48 + 15, crystal.y * 48 + 15, 18, 18); }); game.enemies.forEach(enemy => { ctx.fillStyle = colors.orange; ctx.beginPath(); ctx.arc(enemy.x * 48 + 23, enemy.y * 48 + 23, 15, 0, Math.PI * 2); ctx.fill(); }); ctx.fillStyle = colors.cyan; ctx.fillRect(game.player.x * 48 + 12, game.player.y * 48 + 12, 24, 24); text('CRYSTALS ' + (3 - game.crystals.length) + ' / 3', 28, 40, 16, colors.muted); }
+  if (mode === 'drift') { ctx.fillStyle = '#182a28'; ctx.fillRect(150, 0, 600, 500); ctx.fillStyle = '#263a36'; ctx.fillRect(205, 0, 490, 500); ctx.strokeStyle = colors.lime; ctx.lineWidth = 3; ctx.setLineDash([12, 20]); ctx.strokeRect(225, 0, 450, 500); ctx.setLineDash([]); ctx.strokeStyle = 'rgba(244,240,232,.16)'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(300, 0); ctx.lineTo(330, 500); ctx.moveTo(600, 0); ctx.lineTo(570, 500); ctx.stroke(); drawCar(game.player.x, game.player.y, colors.cyan); game.obstacles.forEach(obstacle => drawCar(obstacle.x, obstacle.y, colors.orange)); text('LAP DISTANCE ' + Math.floor(score), 28, 40, 16, colors.muted); }
+  if (mode === 'dungeon') { for (let y = 1; y < 10; y++) for (let x = 1; x < 16; x++) { ctx.fillStyle = (x + y) % 2 ? '#142421' : '#19302b'; ctx.fillRect(x * 48, y * 48, 46, 46); } game.crystals.forEach(crystal => drawCrystal(crystal.x * 48 + 23, crystal.y * 48 + 23, 15)); game.enemies.forEach(enemy => drawDrone(enemy.x * 48 + 23, enemy.y * 48 + 23, colors.orange)); ctx.fillStyle = colors.cyan; ctx.beginPath(); ctx.arc(game.player.x * 48 + 23, game.player.y * 48 + 23, 15, 0, Math.PI * 2); ctx.fill(); ctx.fillStyle = '#102c32'; ctx.fillRect(game.player.x * 48 + 16, game.player.y * 48 + 19, 14, 7); text('CRYSTALS ' + (3 - game.crystals.length) + ' / 3', 28, 40, 16, colors.muted); }
   if (mode === 'bubble') { game.bubbles.forEach(bubble => { ctx.fillStyle = `hsl(${bubble.hue}, 85%, 65%)`; ctx.beginPath(); ctx.arc(bubble.x, bubble.y, bubble.r, 0, Math.PI * 2); ctx.fill(); ctx.strokeStyle = colors.ink; ctx.stroke(); }); text('BUBBLES ' + game.bubbles.length, 28, 40, 16, colors.muted); }
-  if (mode === 'laser') { ctx.fillStyle = colors.cyan; ctx.fillRect(game.player - 22, 440, 44, 20); ctx.fillStyle = colors.lime; game.bullets.forEach(bullet => ctx.fillRect(bullet.x - 2, bullet.y, 4, 14)); game.drones.forEach(drone => { ctx.fillStyle = colors.orange; ctx.fillRect(drone.x - 18, drone.y - 12, 36, 24); }); text('DRONES ' + game.drones.length, 28, 40, 16, colors.muted); }
-  if (mode === 'orbit') { ctx.strokeStyle = colors.cyan; ctx.beginPath(); ctx.arc(450, 250, 145, 0, Math.PI * 2); ctx.stroke(); ctx.fillStyle = colors.lime; ctx.beginPath(); ctx.arc(450, 250, 24, 0, Math.PI * 2); ctx.fill(); game.satellites.forEach(satellite => { const x = 450 + Math.cos(satellite.angle) * satellite.radius, y = 250 + Math.sin(satellite.angle) * satellite.radius; ctx.fillStyle = satellite.hit ? colors.muted : colors.orange; ctx.fillRect(x - 8, y - 8, 16, 16); }); text('SATELLITES ' + game.satellites.filter(satellite => satellite.hit).length + ' / ' + game.satellites.length, 28, 40, 16, colors.muted); }
-  if (mode === 'stack') { game.blocks.forEach(block => { ctx.fillStyle = colors.cyan; ctx.fillRect(block.x, block.y, block.w, 42); }); ctx.fillStyle = colors.orange; ctx.fillRect(game.current.x, game.current.y, game.current.w, 42); text('LEVEL ' + (game.blocks.length - 1), 28, 40, 16, colors.muted); }
+  if (mode === 'laser') { ctx.fillStyle = colors.cyan; ctx.fillRect(game.player - 24, 442, 48, 18); ctx.fillStyle = colors.lime; ctx.fillRect(game.player - 8, 428, 16, 15); ctx.fillStyle = colors.orange; game.bullets.forEach(bullet => { glow(colors.orange, 12); ctx.fillRect(bullet.x - 3, bullet.y, 6, 16); clearGlow(); }); game.drones.forEach(drone => drawDrone(drone.x, drone.y)); text('DRONES ' + game.drones.length, 28, 40, 16, colors.muted); }
+  if (mode === 'orbit') { ctx.strokeStyle = colors.cyan; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(450, 250, 145, 0, Math.PI * 2); ctx.stroke(); ctx.strokeStyle = 'rgba(109,232,224,.28)'; ctx.beginPath(); ctx.arc(450, 250, 105, 0, Math.PI * 2); ctx.stroke(); glow(colors.lime, 18); ctx.fillStyle = colors.lime; ctx.beginPath(); ctx.arc(450, 250, 24, 0, Math.PI * 2); ctx.fill(); clearGlow(); game.satellites.forEach(satellite => { const x = 450 + Math.cos(satellite.angle) * satellite.radius, y = 250 + Math.sin(satellite.angle) * satellite.radius; ctx.strokeStyle = satellite.hit ? colors.muted : colors.orange; ctx.beginPath(); ctx.moveTo(x - 16, y); ctx.lineTo(x + 16, y); ctx.moveTo(x, y - 9); ctx.lineTo(x, y + 9); ctx.stroke(); ctx.fillStyle = satellite.hit ? colors.muted : colors.orange; ctx.fillRect(x - 5, y - 5, 10, 10); }); text('SATELLITES ' + game.satellites.filter(satellite => satellite.hit).length + ' / ' + game.satellites.length, 28, 40, 16, colors.muted); }
+  if (mode === 'stack') { game.blocks.forEach((block, index) => { ctx.fillStyle = index % 2 ? colors.cyan : '#3b9da0'; roundedRect(block.x, block.y, block.w, 42, 8); ctx.fillStyle = 'rgba(255,255,255,.2)'; ctx.fillRect(block.x + 8, block.y + 8, Math.max(5, block.w - 16), 3); }); ctx.fillStyle = colors.orange; roundedRect(game.current.x, game.current.y, game.current.w, 42, 8); text('LEVEL ' + (game.blocks.length - 1), 28, 40, 16, colors.muted); }
   if (mode === 'color') { text('MATCH THE SIGNAL', 28, 40, 16, colors.muted); ctx.fillStyle = game.targetColor; ctx.beginPath(); ctx.arc(450, 150, 60, 0, Math.PI * 2); ctx.fill(); game.options.forEach((color, index) => { ctx.fillStyle = color; ctx.fillRect(170 + index * 150, 275, 120, 90); }); text('ROUND ' + game.round + ' / 10', 700, 40, 14, colors.lime); }
 }
 
