@@ -35,7 +35,152 @@
       font: 600 .82rem/1 var(--ss-mono, ui-monospace, monospace);
       letter-spacing: .1em;
       text-transform: uppercase;
-      margin: 0 0 1rem
+      margin: 0
+    }
+
+    .topline {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: .8rem;
+      margin-bottom: 1rem
+    }
+
+    .quick-tools {
+      position: relative;
+      z-index: 5;
+      margin-left: auto
+    }
+
+    .quick-tools summary {
+      list-style: none;
+      cursor: pointer;
+      padding: .65rem .85rem;
+      border: 1px solid var(--ss-border, #2a3142);
+      border-radius: 9px;
+      background: var(--ss-ink, #161d31);
+      color: var(--ss-bone, #e8ecf3);
+      font: 600 .82rem/1 var(--ss-mono, ui-monospace, monospace)
+    }
+
+    .quick-tools summary::-webkit-details-marker {
+      display: none
+    }
+
+    .quick-tools summary::after {
+      content: " +";
+      color: var(--ss-cyan, #00e5ff)
+    }
+
+    .quick-tools[open] summary::after {
+      content: " -"
+    }
+
+    .quick-tools summary:focus-visible,
+    .quick-tool-control:focus-visible,
+    .quick-note:focus-visible,
+    .quick-tool-link:focus-visible {
+      outline: 2px solid var(--ss-cyan, #00e5ff);
+      outline-offset: 3px
+    }
+
+    .quick-tools-panel {
+      position: absolute;
+      top: calc(100% + .55rem);
+      right: 0;
+      width: min(25rem, calc(100vw - 2rem));
+      display: grid;
+      gap: .85rem;
+      max-height: min(80vh, 42rem);
+      overflow: auto;
+      padding: 1rem;
+      border: 1px solid var(--ss-border, #2a3142);
+      border-radius: 12px;
+      background: var(--ss-ink, #161d31);
+      box-shadow: 0 16px 42px rgba(0, 0, 0, .55)
+    }
+
+    .quick-tool {
+      padding-bottom: .8rem;
+      border-bottom: 1px solid var(--ss-border, #2a3142)
+    }
+
+    .quick-tool:last-child {
+      padding-bottom: 0;
+      border-bottom: 0
+    }
+
+    .quick-tool-title {
+      display: block;
+      margin-bottom: .45rem;
+      color: var(--ss-cyan, #00e5ff);
+      font: 600 .67rem/1.2 var(--ss-mono, ui-monospace, monospace);
+      text-transform: uppercase
+    }
+
+    .quick-tool-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: .45rem
+    }
+
+    .quick-tool-control,
+    .quick-tool-link {
+      display: inline-block;
+      cursor: pointer;
+      padding: .48rem .65rem;
+      border: 1px solid var(--ss-border, #2a3142);
+      border-radius: 7px;
+      background: rgba(255, 255, 255, .04);
+      color: var(--ss-bone, #e8ecf3);
+      font: 600 .76rem/1.2 var(--ss-mono, ui-monospace, monospace);
+      text-decoration: none
+    }
+
+    .quick-tool-control:hover,
+    .quick-tool-link:hover {
+      border-color: var(--ss-cyan, #00e5ff)
+    }
+
+    .quick-tool input[type=number] {
+      width: 4.2rem;
+      padding: .45rem;
+      border: 1px solid var(--ss-border, #2a3142);
+      border-radius: 7px;
+      background: #0b0f18;
+      color: var(--ss-bone, #e8ecf3);
+      font: .85rem var(--ss-mono, ui-monospace, monospace)
+    }
+
+    .quick-timer-readout {
+      min-width: 3.3rem;
+      color: var(--ss-bone, #e8ecf3);
+      font: 700 1rem/1 var(--ss-mono, ui-monospace, monospace)
+    }
+
+    .quick-note {
+      display: block;
+      width: 100%;
+      resize: vertical;
+      padding: .6rem .7rem;
+      border: 1px solid var(--ss-border, #2a3142);
+      border-radius: 7px;
+      background: #0b0f18;
+      color: var(--ss-bone, #e8ecf3);
+      font: .85rem/1.5 var(--ss-body, system-ui, sans-serif)
+    }
+
+    .quick-tool-status {
+      margin: .35rem 0 0;
+      color: var(--ss-faint, #74809a);
+      font-size: .76rem
+    }
+
+    .quick-idea {
+      margin: .45rem 0 0;
+      color: var(--ss-mist, #9aabd0);
+      font-size: .85rem
     }
 
     /* ── the grid: the dashboard's, verbatim in behaviour ───────────────────── */
@@ -859,7 +1004,39 @@
 
 <body>
   <div class="wrap">
-    <a class="back" href="../../">&larr; All coursework</a>
+    <div class="topline">
+      <a class="back" href="../../">&larr; All coursework</a>
+      <details class="quick-tools">
+        <summary>Quick tools</summary>
+        <div class="quick-tools-panel">
+          <section class="quick-tool" aria-labelledby="quick-timer-title">
+            <span class="quick-tool-title" id="quick-timer-title">Focus timer</span>
+            <div class="quick-tool-row">
+              <label for="quick-timer-minutes">Minutes</label>
+              <input id="quick-timer-minutes" type="number" min="1" max="90" value="10">
+              <span class="quick-timer-readout" id="quick-timer-readout" aria-live="off">10:00</span>
+              <button class="quick-tool-control" id="quick-timer-toggle" type="button">Start</button>
+              <button class="quick-tool-control" id="quick-timer-reset" type="button">Reset</button>
+            </div>
+            <p class="quick-tool-status" id="quick-timer-status" role="status">Ready when you are.</p>
+          </section>
+          <section class="quick-tool" aria-labelledby="quick-note-title">
+            <label class="quick-tool-title" id="quick-note-title" for="quick-note">Scratchpad</label>
+            <textarea class="quick-note" id="quick-note" rows="3" placeholder="Jot down an idea..."></textarea>
+            <p class="quick-tool-status" id="quick-note-status" role="status">Notes save in this browser.</p>
+          </section>
+          <section class="quick-tool" aria-labelledby="quick-idea-title">
+            <span class="quick-tool-title" id="quick-idea-title">Random upgrade idea</span>
+            <button class="quick-tool-control" id="quick-idea-button" type="button">Surprise me</button>
+            <p class="quick-idea" id="quick-idea-output" aria-live="polite">Need a spark? Pick an idea.</p>
+          </section>
+          <section class="quick-tool" aria-labelledby="quick-checklist-title">
+            <span class="quick-tool-title" id="quick-checklist-title">Jump to</span>
+            <a class="quick-tool-link" href="#success-checklist">Success checklist</a>
+          </section>
+        </div>
+      </details>
+    </div>
     <div class="bento">
       <section class="tl hero w4">
         <div class="eyebrow">App Design 1 &middot; Week 8 &middot; Unit 03 — Make it interactive</div>
@@ -897,7 +1074,7 @@
         </ol>
         <p class="hint">Answer in your notes. We go over them together before anything else.</p>
       </section>
-      <section class="tl">
+      <section class="tl" id="success-checklist" tabindex="-1">
         <span class="k">You have met it when</span>
         <ul class="sc">
           <li><label><input type="checkbox" data-sc="0"><span>I made one upgrade and I can explain every line of
@@ -1057,6 +1234,95 @@ python proxy-server.py</pre>
     }
     scBoxes.forEach(function (b) { b.addEventListener("change", scSync); });
     scSync();
+
+    /* quick tools */
+    var quickTimerInput = document.getElementById("quick-timer-minutes");
+    var quickTimerReadout = document.getElementById("quick-timer-readout");
+    var quickTimerStatus = document.getElementById("quick-timer-status");
+    var quickTimerToggle = document.getElementById("quick-timer-toggle");
+    var quickTimerReset = document.getElementById("quick-timer-reset");
+    var quickTimerRemaining = 600;
+    var quickTimerInterval = null;
+
+    function quickTimerDraw() {
+      var minutes = Math.floor(quickTimerRemaining / 60);
+      var seconds = quickTimerRemaining % 60;
+      quickTimerReadout.textContent = (minutes < 10 ? "0" : "") + minutes + ":" + (seconds < 10 ? "0" : "") + seconds;
+    }
+
+    function quickTimerSet() {
+      var duration = parseInt(quickTimerInput.value, 10);
+      if (!duration || duration < 1) duration = 1;
+      if (duration > 90) duration = 90;
+      quickTimerInput.value = duration;
+      quickTimerRemaining = duration * 60;
+      quickTimerDraw();
+      quickTimerStatus.textContent = "Timer reset.";
+    }
+
+    quickTimerToggle.addEventListener("click", function () {
+      if (quickTimerInterval) {
+        clearInterval(quickTimerInterval);
+        quickTimerInterval = null;
+        quickTimerToggle.textContent = "Start";
+        quickTimerStatus.textContent = "Paused.";
+        return;
+      }
+      if (quickTimerRemaining <= 0) quickTimerSet();
+      quickTimerToggle.textContent = "Pause";
+      quickTimerStatus.textContent = "Focus session in progress.";
+      quickTimerInterval = setInterval(function () {
+        quickTimerRemaining--;
+        quickTimerDraw();
+        if (quickTimerRemaining <= 0) {
+          clearInterval(quickTimerInterval);
+          quickTimerInterval = null;
+          quickTimerToggle.textContent = "Start";
+          quickTimerStatus.textContent = "Time is up. Take a short break.";
+        }
+      }, 1000);
+    });
+
+    quickTimerReset.addEventListener("click", function () {
+      if (quickTimerInterval) clearInterval(quickTimerInterval);
+      quickTimerInterval = null;
+      quickTimerToggle.textContent = "Start";
+      quickTimerSet();
+    });
+    quickTimerInput.addEventListener("change", function () {
+      if (!quickTimerInterval) quickTimerSet();
+    });
+    quickTimerDraw();
+
+    var quickNote = document.getElementById("quick-note");
+    var quickNoteStatus = document.getElementById("quick-note-status");
+    try {
+      quickNote.value = localStorage.getItem("week8-day4-quick-note") || "";
+    } catch (_) {
+      quickNoteStatus.textContent = "Browser storage is unavailable; notes will not persist.";
+    }
+    quickNote.addEventListener("input", function () {
+      try {
+        localStorage.setItem("week8-day4-quick-note", quickNote.value);
+        quickNoteStatus.textContent = "Saved in this browser.";
+      } catch (_) {
+        quickNoteStatus.textContent = "Could not save in this browser.";
+      }
+    });
+
+    var quickIdeas = [
+      "Add a reset button so visitors can start over.",
+      "Let visitors choose between two options and show a result.",
+      "Track progress with a counter or checklist.",
+      "Change the page message based on what the visitor selects.",
+      "Add a small quiz with a score and a play-again button.",
+      "Remember one visitor preference the next time they visit."
+    ];
+    var quickIdeaOutput = document.getElementById("quick-idea-output");
+    document.getElementById("quick-idea-button").addEventListener("click", function () {
+      var idea = quickIdeas[Math.floor(Math.random() * quickIdeas.length)];
+      quickIdeaOutput.textContent = idea;
+    });
 
     /* copy buttons */
     document.querySelectorAll(".codewrap .cp").forEach(function (b) {
