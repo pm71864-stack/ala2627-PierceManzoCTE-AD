@@ -42,8 +42,101 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
+      flex-wrap: wrap;
       gap: .8rem;
       margin-bottom: 1rem
+    }
+
+    .topline-start {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: .8rem
+    }
+
+    .ai-question {
+      position: relative;
+      z-index: 6
+    }
+
+    .ai-question summary {
+      list-style: none;
+      cursor: pointer;
+      padding: .65rem .85rem;
+      border: 1px solid color-mix(in srgb, var(--ss-green, #3effa0) 55%, var(--ss-border, #2a3142));
+      border-radius: 9px;
+      background: var(--ss-ink, #161d31);
+      color: var(--ss-bone, #e8ecf3);
+      font: 600 .82rem/1 var(--ss-mono, ui-monospace, monospace)
+    }
+
+    .ai-question summary::-webkit-details-marker {
+      display: none
+    }
+
+    .ai-question summary::after {
+      content: " +";
+      color: var(--ss-green, #3effa0)
+    }
+
+    .ai-question[open] summary::after {
+      content: " -"
+    }
+
+    .ai-question-panel {
+      position: absolute;
+      top: calc(100% + .55rem);
+      left: 0;
+      width: min(27rem, calc(100vw - 2rem));
+      display: grid;
+      gap: .65rem;
+      max-height: min(80vh, 38rem);
+      overflow: auto;
+      padding: 1rem;
+      border: 1px solid var(--ss-border, #2a3142);
+      border-radius: 12px;
+      background: var(--ss-ink, #161d31);
+      box-shadow: 0 16px 42px rgba(0, 0, 0, .55)
+    }
+
+    .ai-question-panel h2 {
+      margin: 0;
+      font: 700 1rem/1.3 var(--ss-display, system-ui, sans-serif)
+    }
+
+    .ai-question-panel p {
+      margin: 0;
+      color: var(--ss-faint, #74809a);
+      font-size: .78rem
+    }
+
+    .ai-question-input {
+      width: 100%;
+      min-height: 7rem;
+      resize: vertical;
+      padding: .65rem .75rem;
+      border: 1px solid var(--ss-border, #2a3142);
+      border-radius: 8px;
+      background: #0b0f18;
+      color: var(--ss-bone, #e8ecf3);
+      font: .9rem/1.5 var(--ss-body, system-ui, sans-serif)
+    }
+
+    .ai-question-control {
+      cursor: pointer;
+      padding: .65rem .8rem;
+      border: 1px solid var(--ss-green, #3effa0);
+      border-radius: 8px;
+      background: var(--ss-green, #3effa0);
+      color: var(--ss-void, #0d1322);
+      font: 700 .8rem/1.2 var(--ss-mono, ui-monospace, monospace)
+    }
+
+    .ai-question summary:focus-visible,
+    .ai-question-input:focus-visible,
+    .ai-question-control:focus-visible {
+      outline: 2px solid var(--ss-green, #3effa0);
+      outline-offset: 3px
     }
 
     .quick-tools {
@@ -1005,7 +1098,21 @@
 <body>
   <div class="wrap">
     <div class="topline">
-      <a class="back" href="../../">&larr; All coursework</a>
+      <div class="topline-start">
+        <details class="ai-question">
+          <summary>Ask AI</summary>
+          <form class="ai-question-panel" id="ai-question-form">
+            <h2>Ask a question</h2>
+            <label for="ai-question-input">What do you need help with?</label>
+            <textarea class="ai-question-input" id="ai-question-input" maxlength="2000"
+              placeholder="Ask about your project, HTML, CSS, or JavaScript..." required></textarea>
+            <button class="ai-question-control" type="submit">Ask ChatGPT in a new tab</button>
+            <p>Your question opens in ChatGPT when you submit. Sign-in may be required; do not include passwords or
+              private information.</p>
+          </form>
+        </details>
+        <a class="back" href="../../">&larr; All coursework</a>
+      </div>
       <details class="quick-tools">
         <summary>Quick tools</summary>
         <div class="quick-tools-panel">
@@ -1322,6 +1429,16 @@ python proxy-server.py</pre>
     document.getElementById("quick-idea-button").addEventListener("click", function () {
       var idea = quickIdeas[Math.floor(Math.random() * quickIdeas.length)];
       quickIdeaOutput.textContent = idea;
+    });
+
+    var aiQuestionForm = document.getElementById("ai-question-form");
+    var aiQuestionInput = document.getElementById("ai-question-input");
+    aiQuestionForm.addEventListener("submit", function (event) {
+      event.preventDefault();
+      var question = aiQuestionInput.value.trim();
+      if (!question) return;
+      var prompt = "I am a beginner building a website for App Design 1. Answer in clear, beginner-friendly steps and help me understand the code. My question: " + question;
+      window.open("https://chatgpt.com/?q=" + encodeURIComponent(prompt), "_blank", "noopener,noreferrer");
     });
 
     /* copy buttons */
