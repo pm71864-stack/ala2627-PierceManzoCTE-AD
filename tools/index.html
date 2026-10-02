@@ -40,6 +40,10 @@
         aria-controls="stacks-view" data-view="stacks" tabindex="-1">
         <span class="tab-index">02</span> Tab organizer
       </button>
+      <button id="vehicles-tab" class="tool-tab" type="button" role="tab" aria-selected="false"
+        aria-controls="vehicles-view" data-view="vehicles" tabindex="-1">
+        <span class="tab-index">03</span> Vehicle studio
+      </button>
     </nav>
     <p class="tool-status" id="tool-status" role="status" aria-live="polite"></p>
 
@@ -73,6 +77,138 @@
         <button class="primary-button" type="submit">Create stack <span aria-hidden="true">+</span></button>
       </form>
       <div id="stack-list" class="saved-list" aria-live="polite"></div>
+    </section>
+
+    <section id="vehicles-view" class="tool-view vehicle-view" role="tabpanel" aria-labelledby="vehicles-tab" hidden>
+      <div class="view-heading">
+        <div>
+          <p class="section-kicker">Configure your build</p>
+          <h2>Vehicle studio</h2>
+        </div>
+        <p>Choose a model, dial in the details, and save a build you can come back to.</p>
+      </div>
+
+      <div class="vehicle-picker" role="group" aria-label="Choose a vehicle">
+        <button class="vehicle-choice" type="button" data-vehicle="truck" aria-pressed="false">
+          <span class="vehicle-choice-number">01 / PICKUP</span>
+          <strong>Summit Trail X</strong>
+          <span>From $42,800</span>
+        </button>
+        <button class="vehicle-choice" type="button" data-vehicle="car" aria-pressed="true">
+          <span class="vehicle-choice-number">02 / SPORT</span>
+          <strong>Apex GT</strong>
+          <span>From $48,500</span>
+        </button>
+        <button class="vehicle-choice" type="button" data-vehicle="semi" aria-pressed="false">
+          <span class="vehicle-choice-number">03 / HEAVY DUTY</span>
+          <strong>Road King 860</strong>
+          <span>From $154,000</span>
+        </button>
+      </div>
+
+      <div class="vehicle-builder">
+        <section class="vehicle-preview" aria-label="Vehicle preview">
+          <div class="preview-topline">
+            <span id="preview-model-name">Apex GT</span>
+            <span>INTERACTIVE MODEL / DRAG TO ROTATE</span>
+          </div>
+          <div class="vehicle-stage" id="vehicle-stage">
+            <canvas id="vehicle-canvas" aria-label="Interactive 3D vehicle preview" tabindex="0"></canvas>
+            <div class="vehicle-stage-loading" id="vehicle-stage-status" role="status">Loading vehicle preview...</div>
+            <div class="stage-coordinate" aria-hidden="true">STUDIO 01 <span>360°</span></div>
+          </div>
+          <p class="preview-caption">Drag to turn the model. Use the arrow keys while the preview is focused.</p>
+        </section>
+
+        <aside class="vehicle-controls" aria-label="Vehicle configuration">
+          <section class="config-section">
+            <h3>Paint</h3>
+            <div class="paint-swatches" role="group" aria-label="Paint color">
+              <button class="paint-swatch" type="button" data-paint="#d9e0e5" data-paint-name="Glacier white"
+                style="--swatch:#d9e0e5" aria-label="Glacier white" aria-pressed="false"></button>
+              <button class="paint-swatch" type="button" data-paint="#8f9ba5" data-paint-name="Silverstone"
+                style="--swatch:#8f9ba5" aria-label="Silverstone" aria-pressed="false"></button>
+              <button class="paint-swatch" type="button" data-paint="#18212c" data-paint-name="Obsidian"
+                style="--swatch:#18212c" aria-label="Obsidian" aria-pressed="false"></button>
+              <button class="paint-swatch" type="button" data-paint="#215da8" data-paint-name="Electric blue"
+                style="--swatch:#215da8" aria-label="Electric blue" aria-pressed="false"></button>
+              <button class="paint-swatch" type="button" data-paint="#167653" data-paint-name="Racing green"
+                style="--swatch:#167653" aria-label="Racing green" aria-pressed="false"></button>
+              <button class="paint-swatch" type="button" data-paint="#bd2938" data-paint-name="Signal red"
+                style="--swatch:#bd2938" aria-label="Signal red" aria-pressed="false"></button>
+              <button class="paint-swatch" type="button" data-paint="#e9b52e" data-paint-name="Track yellow"
+                style="--swatch:#e9b52e" aria-label="Track yellow" aria-pressed="false"></button>
+              <button class="paint-swatch" type="button" data-paint="#cb623b" data-paint-name="Copper flare"
+                style="--swatch:#cb623b" aria-label="Copper flare" aria-pressed="false"></button>
+            </div>
+            <p class="selected-option" id="paint-name">Electric blue</p>
+          </section>
+
+          <section class="config-section">
+            <h3>Interior material</h3>
+            <div class="material-options" role="group" aria-label="Interior material">
+              <button class="material-choice" type="button" data-material="leather" aria-pressed="true">Leather</button>
+              <button class="material-choice" type="button" data-material="alcantara"
+                aria-pressed="false">Alcantara</button>
+              <button class="material-choice" type="button" data-material="fabric" aria-pressed="false">Woven</button>
+            </div>
+          </section>
+
+          <section class="config-section spoiler-section">
+            <label for="spoiler-choice" id="spoiler-label">Rear spoiler</label>
+            <select id="spoiler-choice">
+              <option value="none">No spoiler · Included</option>
+              <option value="lip">Street lip · +$450</option>
+              <option value="wing">Track wing · +$1,800</option>
+            </select>
+          </section>
+
+          <section class="config-section">
+            <h3>Upgrade packages</h3>
+            <label class="upgrade-option"><input type="checkbox" value="forged"><span><strong>Forged
+                  wheels</strong><small>Lightweight split-spoke set · $3,200</small></span></label>
+            <label class="upgrade-option"><input type="checkbox" value="performance"><span><strong>Performance
+                  package</strong><small>Sport aero and tuned hardware · $4,800</small></span></label>
+            <label class="upgrade-option"><input type="checkbox" value="lighting"><span><strong>LED lighting
+                  package</strong><small>Signature lamps and light bar · $1,100</small></span></label>
+          </section>
+
+          <section class="build-summary" aria-labelledby="build-summary-title">
+            <div class="summary-heading">
+              <div>
+                <p class="section-kicker">Your specification</p>
+                <h3 id="build-summary-title">Build summary</h3>
+              </div>
+              <strong class="build-price" id="build-price">$48,500</strong>
+            </div>
+            <ul class="spec-list" id="build-specs"></ul>
+            <label class="sr-only" for="build-name">Name this build</label>
+            <input class="build-name-input" id="build-name" maxlength="50" placeholder="Name this build (optional)">
+            <div class="build-actions">
+              <button class="primary-button" id="save-build" type="button">Save build <span
+                  aria-hidden="true">+</span></button>
+              <button class="copy-build-button" id="copy-build" type="button" title="Copy build specification"
+                aria-label="Copy build specification">
+                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <rect x="8" y="8" width="12" height="12" rx="2" stroke="currentColor" stroke-width="1.7" />
+                  <path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2" stroke="currentColor"
+                    stroke-width="1.7" />
+                </svg>
+              </button>
+            </div>
+          </section>
+        </aside>
+      </div>
+
+      <section class="saved-builds-section" aria-labelledby="saved-builds-title">
+        <div class="saved-builds-heading">
+          <div>
+            <p class="section-kicker">Your garage</p>
+            <h3 id="saved-builds-title">Saved builds</h3>
+          </div>
+        </div>
+        <div class="saved-builds" id="saved-builds"></div>
+      </section>
     </section>
   </main>
 

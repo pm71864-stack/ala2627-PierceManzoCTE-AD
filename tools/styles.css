@@ -183,6 +183,11 @@ h1 em {
   border-bottom-color: var(--lime);
 }
 
+.tool-switcher {
+  overflow-x: auto;
+  scrollbar-width: thin;
+}
+
 .tab-index {
   color: var(--faint);
   font: .67rem var(--mono);
@@ -456,6 +461,445 @@ h2 {
   color: var(--cyan);
 }
 
+.vehicle-view {
+  padding-bottom: 1rem;
+}
+
+.vehicle-picker {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: .65rem;
+  margin-bottom: 1rem;
+}
+
+.vehicle-choice {
+  min-height: 6.3rem;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: .26rem;
+  padding: .8rem 1rem;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  background: rgba(10, 17, 23, .82);
+  color: var(--muted);
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 160ms ease, background 160ms ease, transform 160ms ease;
+}
+
+.vehicle-choice:hover {
+  border-color: var(--cyan);
+  transform: translateY(-2px);
+}
+
+.vehicle-choice[aria-pressed="true"] {
+  border-color: var(--lime);
+  background: rgba(201, 255, 102, .08);
+  color: var(--ink);
+}
+
+.vehicle-choice-number {
+  color: var(--cyan);
+  font: .58rem var(--mono);
+  letter-spacing: .08em;
+}
+
+.vehicle-choice strong {
+  color: var(--ink);
+  font-size: .93rem;
+  font-weight: 500;
+}
+
+.vehicle-choice>span:last-child {
+  font: .64rem var(--mono);
+}
+
+.vehicle-builder {
+  display: grid;
+  grid-template-columns: minmax(0, 1.45fr) minmax(19rem, .75fr);
+  align-items: start;
+  gap: 1rem;
+}
+
+.vehicle-preview,
+.vehicle-controls {
+  min-width: 0;
+}
+
+.preview-topline {
+  min-height: 2.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: .8rem;
+  color: var(--muted);
+  font: .62rem var(--mono);
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+
+.preview-topline span:first-child {
+  color: var(--ink);
+  font-size: .72rem;
+}
+
+.vehicle-stage {
+  position: relative;
+  min-height: 390px;
+  height: clamp(20rem, 43vw, 31rem);
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 5px;
+  background: radial-gradient(ellipse at 50% 55%, rgba(114, 230, 237, .11), transparent 48%), linear-gradient(160deg, rgba(16, 26, 33, .92), rgba(6, 10, 14, .98));
+}
+
+#vehicle-canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+  cursor: grab;
+  touch-action: none;
+  outline: none;
+}
+
+#vehicle-canvas:active {
+  cursor: grabbing;
+}
+
+#vehicle-canvas:focus-visible {
+  outline: 2px solid var(--cyan);
+  outline-offset: -4px;
+}
+
+.vehicle-stage-loading {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+  color: var(--muted);
+  font: .7rem var(--mono);
+  pointer-events: none;
+}
+
+.vehicle-stage-loading[hidden] {
+  display: none;
+}
+
+.stage-coordinate {
+  position: absolute;
+  right: .85rem;
+  bottom: .75rem;
+  left: .85rem;
+  display: flex;
+  justify-content: space-between;
+  color: var(--faint);
+  font: .57rem var(--mono);
+  letter-spacing: .08em;
+  pointer-events: none;
+}
+
+.stage-coordinate span {
+  color: var(--cyan);
+}
+
+.preview-caption {
+  margin: .55rem 0 0;
+  color: var(--faint);
+  font-size: .72rem;
+}
+
+.vehicle-controls {
+  display: grid;
+  gap: .7rem;
+}
+
+.config-section,
+.build-summary {
+  padding: .9rem;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  background: rgba(10, 17, 23, .83);
+}
+
+.config-section h3,
+.spoiler-section label {
+  display: block;
+  margin: 0 0 .7rem;
+  color: var(--ink);
+  font-size: .81rem;
+  font-weight: 500;
+}
+
+.paint-swatches {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .55rem;
+}
+
+.paint-swatch {
+  width: 1.8rem;
+  aspect-ratio: 1;
+  border: 2px solid rgba(255, 255, 255, .22);
+  border-radius: 50%;
+  background: var(--swatch);
+  cursor: pointer;
+  transition: transform 140ms ease, outline-color 140ms ease;
+}
+
+.paint-swatch:hover {
+  transform: scale(1.1);
+}
+
+.paint-swatch[aria-pressed="true"] {
+  outline: 2px solid var(--lime);
+  outline-offset: 3px;
+}
+
+.selected-option {
+  margin: .7rem 0 0;
+  color: var(--muted);
+  font-size: .72rem;
+}
+
+.material-options {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: .35rem;
+}
+
+.material-choice {
+  min-height: 2.2rem;
+  padding: .35rem;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  background: transparent;
+  color: var(--muted);
+  font-size: .7rem;
+  cursor: pointer;
+}
+
+.material-choice[aria-pressed="true"] {
+  border-color: var(--cyan);
+  background: rgba(114, 230, 237, .08);
+  color: var(--ink);
+}
+
+.spoiler-section select {
+  width: 100%;
+  min-height: 2.5rem;
+  padding: .55rem .65rem;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  background: #0a1117;
+  color: var(--ink);
+  font-size: .75rem;
+}
+
+.upgrade-option {
+  display: flex;
+  align-items: flex-start;
+  gap: .65rem;
+  padding: .55rem 0;
+  border-top: 1px solid rgba(163, 178, 193, .12);
+  cursor: pointer;
+}
+
+.upgrade-option:first-of-type {
+  border-top: 0;
+}
+
+.upgrade-option input {
+  width: 1rem;
+  height: 1rem;
+  flex: 0 0 auto;
+  margin: .1rem 0 0;
+  accent-color: var(--lime);
+}
+
+.upgrade-option strong,
+.upgrade-option small {
+  display: block;
+}
+
+.upgrade-option strong {
+  font-size: .74rem;
+  font-weight: 500;
+}
+
+.upgrade-option small {
+  margin-top: .15rem;
+  color: var(--muted);
+  font-size: .66rem;
+}
+
+.build-summary {
+  border-color: rgba(201, 255, 102, .32);
+  background: linear-gradient(145deg, rgba(201, 255, 102, .055), rgba(10, 17, 23, .9) 45%);
+}
+
+.summary-heading,
+.saved-builds-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.summary-heading h3,
+.saved-builds-heading h3 {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+.build-price {
+  color: var(--lime);
+  font: 500 1rem var(--mono);
+}
+
+.spec-list {
+  display: grid;
+  gap: .3rem;
+  margin: .8rem 0;
+  padding: .75rem 0;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  list-style: none;
+}
+
+.spec-list li {
+  display: flex;
+  justify-content: space-between;
+  gap: .7rem;
+  color: var(--muted);
+  font-size: .7rem;
+}
+
+.spec-list li strong {
+  color: var(--ink);
+  font-weight: 400;
+  text-align: right;
+}
+
+.build-name-input {
+  width: 100%;
+  min-height: 2.4rem;
+  padding: .55rem .65rem;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  background: #0a1117;
+  color: var(--ink);
+  font-size: .74rem;
+}
+
+.build-actions {
+  display: flex;
+  gap: .5rem;
+  margin-top: .55rem;
+}
+
+.build-actions .primary-button {
+  flex: 1;
+}
+
+.copy-build-button {
+  width: 2.85rem;
+  min-height: 2.85rem;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  background: transparent;
+  color: var(--cyan);
+  cursor: pointer;
+}
+
+.copy-build-button:hover {
+  background: rgba(114, 230, 237, .08);
+}
+
+.copy-build-button svg {
+  width: 1rem;
+  height: 1rem;
+}
+
+.saved-builds-section {
+  margin-top: 3rem;
+  padding-top: 1.3rem;
+  border-top: 1px solid var(--line);
+}
+
+.saved-builds-heading {
+  margin-bottom: .8rem;
+}
+
+.saved-builds {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: .7rem;
+}
+
+.saved-build-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: .8rem;
+  padding: .8rem;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  background: rgba(10, 17, 23, .8);
+}
+
+.saved-build-card strong,
+.saved-build-card small {
+  display: block;
+}
+
+.saved-build-card strong {
+  font-size: .78rem;
+  font-weight: 500;
+}
+
+.saved-build-card small {
+  margin-top: .2rem;
+  color: var(--muted);
+  font-size: .66rem;
+}
+
+.saved-build-actions {
+  display: flex;
+  gap: .35rem;
+  flex: 0 0 auto;
+}
+
+.saved-build-actions button {
+  min-height: 2rem;
+  padding: 0 .55rem;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  background: transparent;
+  color: var(--muted);
+  font: .62rem var(--mono);
+  cursor: pointer;
+}
+
+.saved-build-actions button:hover {
+  border-color: var(--cyan);
+  color: var(--cyan);
+}
+
+.saved-builds-empty {
+  grid-column: 1 / -1;
+  margin: 0;
+  padding: 1rem;
+  border: 1px dashed var(--line);
+  color: var(--muted);
+  font-size: .78rem;
+}
+
 .sr-only {
   position: absolute;
   width: 1px;
@@ -534,6 +978,15 @@ h2 {
   .entry-form button {
     justify-self: stretch;
   }
+
+  .vehicle-builder {
+    grid-template-columns: 1fr;
+  }
+
+  .vehicle-stage {
+    min-height: 17rem;
+    height: 64vw;
+  }
 }
 
 @media (max-width: 420px) {
@@ -572,6 +1025,18 @@ h2 {
 
   .tool-footer {
     font-size: .56rem;
+  }
+
+  .vehicle-picker {
+    grid-template-columns: 1fr;
+  }
+
+  .vehicle-choice {
+    min-height: 4.6rem;
+  }
+
+  .saved-builds {
+    grid-template-columns: 1fr;
   }
 }
 
