@@ -89,21 +89,22 @@
         </div>
         <p>Concept vehicles with estimated prices. Choose a model, dial in the details, and save your build.</p>
       </div>
+      <p class="tool-status" id="vehicle-status" role="status" aria-live="polite"></p>
 
       <div class="vehicle-picker" role="group" aria-label="Choose a vehicle">
         <button class="vehicle-choice" type="button" data-vehicle="truck" aria-pressed="false">
           <span class="vehicle-choice-number">01 / PICKUP</span>
-          <strong>Summit Trail X</strong>
+          <strong>Northstar Atlas X</strong>
           <span>From $42,800</span>
         </button>
         <button class="vehicle-choice" type="button" data-vehicle="car" aria-pressed="true">
           <span class="vehicle-choice-number">02 / SPORT</span>
-          <strong>Apex GT</strong>
+          <strong>Aurelia Corsa V12</strong>
           <span>From $48,500</span>
         </button>
         <button class="vehicle-choice" type="button" data-vehicle="semi" aria-pressed="false">
           <span class="vehicle-choice-number">03 / HEAVY DUTY</span>
-          <strong>Road King 860</strong>
+          <strong>Meridian Grand 860</strong>
           <span>From $154,000</span>
         </button>
       </div>
@@ -111,8 +112,12 @@
       <div class="vehicle-builder">
         <section class="vehicle-preview" aria-label="Vehicle preview">
           <div class="preview-topline">
-            <span id="preview-model-name">Apex GT</span>
-            <span>INTERACTIVE MODEL / DRAG TO ROTATE</span>
+            <span id="preview-model-name">Aurelia Corsa V12</span>
+            <span>CONCEPT MODEL / DRAG TO ROTATE</span>
+          </div>
+          <div class="camera-switcher" role="group" aria-label="Preview camera">
+            <button type="button" data-camera="exterior" aria-pressed="true">Exterior</button>
+            <button type="button" data-camera="interior" aria-pressed="false">Cabin view</button>
           </div>
           <div class="vehicle-stage" id="vehicle-stage">
             <canvas id="vehicle-canvas" aria-label="Interactive 3D vehicle preview" tabindex="0"></canvas>
@@ -147,6 +152,19 @@
           </section>
 
           <section class="config-section">
+            <h3>Wheel design</h3>
+            <div class="material-options wheel-options" role="group" aria-label="Wheel design">
+              <button class="material-choice" type="button" data-wheel-style="split" aria-pressed="true">Split
+                spoke</button>
+              <button class="material-choice" type="button" data-wheel-style="turbine"
+                aria-pressed="false">Turbine</button>
+              <button class="material-choice" type="button" data-wheel-style="aero" aria-pressed="false">Aero
+                disc</button>
+            </div>
+            <p class="selected-option" id="wheel-style-name">Split spoke</p>
+          </section>
+
+          <section class="config-section">
             <h3>Interior material</h3>
             <div class="material-options" role="group" aria-label="Interior material">
               <button class="material-choice" type="button" data-material="leather" aria-pressed="true">Leather</button>
@@ -154,6 +172,63 @@
                 aria-pressed="false">Alcantara</button>
               <button class="material-choice" type="button" data-material="fabric" aria-pressed="false">Woven</button>
             </div>
+            <p class="selected-option" id="material-price-note">Leather is included.</p>
+          </section>
+
+          <section class="config-section">
+            <h3>Seat shape</h3>
+            <div class="material-options" role="group" aria-label="Seat shape">
+              <button class="material-choice" type="button" data-seat-style="sport" aria-pressed="true">Sport</button>
+              <button class="material-choice" type="button" data-seat-style="bucket"
+                aria-pressed="false">Bucket</button>
+            </div>
+            <p class="selected-option" id="seat-style-name">Sport seats</p>
+          </section>
+
+          <section class="config-section">
+            <h3>Upholstery color</h3>
+            <div class="detail-swatches" role="group" aria-label="Seat color">
+              <button class="paint-swatch" type="button" data-seat-color="#252729" data-seat-color-name="Onyx"
+                style="--swatch:#252729" aria-label="Onyx seats" aria-pressed="true"></button>
+              <button class="paint-swatch" type="button" data-seat-color="#9a5738" data-seat-color-name="Saddle"
+                style="--swatch:#9a5738" aria-label="Saddle seats" aria-pressed="false"></button>
+              <button class="paint-swatch" type="button" data-seat-color="#d8d0bd" data-seat-color-name="Chalk"
+                style="--swatch:#d8d0bd" aria-label="Chalk seats" aria-pressed="false"></button>
+              <button class="paint-swatch" type="button" data-seat-color="#6e1f2a" data-seat-color-name="Bordeaux"
+                style="--swatch:#6e1f2a" aria-label="Bordeaux seats" aria-pressed="false"></button>
+            </div>
+            <p class="selected-option" id="seat-color-name">Onyx</p>
+          </section>
+
+          <section class="config-section">
+            <h3>Seat belts</h3>
+            <div class="detail-swatches" role="group" aria-label="Seat belt color">
+              <button class="paint-swatch" type="button" data-belt-color="#202326" data-belt-color-name="Black"
+                style="--swatch:#202326" aria-label="Black seat belts" aria-pressed="true"></button>
+              <button class="paint-swatch" type="button" data-belt-color="#bf2938" data-belt-color-name="Racing red"
+                style="--swatch:#bf2938" aria-label="Racing red seat belts" aria-pressed="false"></button>
+              <button class="paint-swatch" type="button" data-belt-color="#e5b72d" data-belt-color-name="Signal yellow"
+                style="--swatch:#e5b72d" aria-label="Signal yellow seat belts" aria-pressed="false"></button>
+              <button class="paint-swatch" type="button" data-belt-color="#276cb4" data-belt-color-name="Track blue"
+                style="--swatch:#276cb4" aria-label="Track blue seat belts" aria-pressed="false"></button>
+            </div>
+            <p class="selected-option" id="belt-color-name">Black</p>
+          </section>
+
+          <section class="config-section">
+            <h3>Contrast stitching</h3>
+            <div class="detail-swatches" role="group" aria-label="Stitching color">
+              <button class="paint-swatch" type="button" data-stitch-color="#d9e0e5" data-stitch-color-name="Ice"
+                style="--swatch:#d9e0e5" aria-label="Ice stitching" aria-pressed="true"></button>
+              <button class="paint-swatch" type="button" data-stitch-color="#bf2938" data-stitch-color-name="Racing red"
+                style="--swatch:#bf2938" aria-label="Red stitching" aria-pressed="false"></button>
+              <button class="paint-swatch" type="button" data-stitch-color="#e5b72d"
+                data-stitch-color-name="Signal yellow" style="--swatch:#e5b72d" aria-label="Yellow stitching"
+                aria-pressed="false"></button>
+              <button class="paint-swatch" type="button" data-stitch-color="#72e6ed" data-stitch-color-name="Aqua"
+                style="--swatch:#72e6ed" aria-label="Aqua stitching" aria-pressed="false"></button>
+            </div>
+            <p class="selected-option" id="stitch-color-name">Ice</p>
           </section>
 
           <section class="config-section spoiler-section">
@@ -162,6 +237,28 @@
               <option value="none">No spoiler · Included</option>
               <option value="lip">Street lip · +$450</option>
               <option value="wing">Track wing · +$1,800</option>
+            </select>
+          </section>
+
+          <section class="config-section exterior-options">
+            <h3>Exterior details</h3>
+            <label for="side-skirt-choice">Side skirts</label>
+            <select id="side-skirt-choice">
+              <option value="none">Standard · Included</option>
+              <option value="sport">Sport skirts · +$700</option>
+              <option value="carbon">Carbon finish · +$1,800</option>
+            </select>
+            <label for="splitter-choice">Front splitter</label>
+            <select id="splitter-choice">
+              <option value="none">Standard · Included</option>
+              <option value="sport">Sport splitter · +$950</option>
+              <option value="carbon">Carbon finish · +$1,750</option>
+            </select>
+            <label for="diffuser-choice">Rear diffuser</label>
+            <select id="diffuser-choice">
+              <option value="none">Standard · Included</option>
+              <option value="sport">Sport diffuser · +$850</option>
+              <option value="carbon">Carbon finish · +$1,650</option>
             </select>
           </section>
 

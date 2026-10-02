@@ -1,7 +1,7 @@
 var vehicleNames = {
-  truck: "Summit Trail X",
-  car: "Apex GT",
-  semi: "Road King 860"
+  truck: "Northstar Atlas X",
+  car: "Aurelia Corsa V12",
+  semi: "Meridian Grand 860"
 };
 
 var vehiclePrices = { truck: 42800, car: 48500, semi: 154000 };
@@ -17,8 +17,36 @@ var paintNames = {
 };
 var materialNames = { leather: "Leather", alcantara: "Alcantara", fabric: "Woven fabric" };
 var materialPrices = { leather: 0, alcantara: 1600, fabric: -500 };
+var seatStyleNames = { sport: "Sport seats", bucket: "Carbon bucket seats" };
+var seatStylePrices = { sport: 0, bucket: 2500 };
+var seatColors = {
+  "#252729": "Onyx",
+  "#9a5738": "Saddle",
+  "#d8d0bd": "Chalk",
+  "#6e1f2a": "Bordeaux"
+};
+var beltColors = {
+  "#202326": "Black",
+  "#bf2938": "Racing red",
+  "#e5b72d": "Signal yellow",
+  "#276cb4": "Track blue"
+};
+var stitchColors = {
+  "#d9e0e5": "Ice",
+  "#bf2938": "Racing red",
+  "#e5b72d": "Signal yellow",
+  "#72e6ed": "Aqua"
+};
+var wheelStyleNames = { split: "Split spoke", turbine: "Turbine", aero: "Aero disc" };
+var wheelStylePrices = { split: 0, turbine: 1400, aero: 2100 };
 var spoilerNames = { none: "No spoiler", lip: "Street lip", wing: "Track wing" };
 var spoilerPrices = { none: 0, lip: 450, wing: 1800 };
+var sideSkirtNames = { none: "Standard side profile", sport: "Sport side skirts", carbon: "Carbon-finish side skirts" };
+var sideSkirtPrices = { none: 0, sport: 700, carbon: 1800 };
+var splitterNames = { none: "Standard front", sport: "Sport front splitter", carbon: "Carbon-finish front splitter" };
+var splitterPrices = { none: 0, sport: 950, carbon: 1750 };
+var diffuserNames = { none: "Standard rear", sport: "Sport rear diffuser", carbon: "Carbon-finish rear diffuser" };
+var diffuserPrices = { none: 0, sport: 850, carbon: 1650 };
 var upgradeNames = {
   forged: "Forged wheel package",
   performance: "Performance package",
@@ -30,11 +58,20 @@ var buildConfig = {
   vehicle: "car",
   paint: "#215da8",
   material: "leather",
+  seatStyle: "sport",
+  seatColor: "#252729",
+  beltColor: "#202326",
+  stitchColor: "#d9e0e5",
+  wheelStyle: "split",
   spoiler: "none",
+  sideSkirt: "none",
+  splitter: "none",
+  diffuser: "none",
   upgrades: []
 };
 var savedBuilds = [];
 var sceneState = null;
+var cameraView = "exterior";
 
 function money(amount) {
   return new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 }).format(amount);
@@ -43,15 +80,28 @@ function money(amount) {
 function selectedBuildPrice() {
   return vehiclePrices[buildConfig.vehicle]
     + materialPrices[buildConfig.material]
+    + seatStylePrices[buildConfig.seatStyle]
+    + wheelStylePrices[buildConfig.wheelStyle]
     + spoilerPrices[buildConfig.spoiler]
+    + sideSkirtPrices[buildConfig.sideSkirt]
+    + splitterPrices[buildConfig.splitter]
+    + diffuserPrices[buildConfig.diffuser]
     + buildConfig.upgrades.reduce(function (total, upgrade) { return total + upgradePrices[upgrade]; }, 0);
 }
 
 function buildSpecification() {
   var options = [
     ["Paint", paintNames[buildConfig.paint]],
+    ["Wheels", wheelStyleNames[buildConfig.wheelStyle]],
     ["Interior", materialNames[buildConfig.material]],
-    [buildConfig.vehicle === "semi" ? "Cab deflector" : "Spoiler", spoilerNames[buildConfig.spoiler]]
+    ["Seat style", seatStyleNames[buildConfig.seatStyle]],
+    ["Upholstery", seatColors[buildConfig.seatColor]],
+    ["Seat belts", beltColors[buildConfig.beltColor]],
+    ["Stitching", stitchColors[buildConfig.stitchColor]],
+    [buildConfig.vehicle === "semi" ? "Cab deflector" : "Spoiler", spoilerNames[buildConfig.spoiler]],
+    ["Side skirts", sideSkirtNames[buildConfig.sideSkirt]],
+    ["Front aero", splitterNames[buildConfig.splitter]],
+    ["Rear diffuser", diffuserNames[buildConfig.diffuser]]
   ];
   buildConfig.upgrades.forEach(function (upgrade) { options.push(["Package", upgradeNames[upgrade]]); });
   return options;
@@ -74,15 +124,47 @@ function updateVehicleControls() {
   document.querySelectorAll("[data-material]").forEach(function (button) {
     button.setAttribute("aria-pressed", String(button.dataset.material === buildConfig.material));
   });
+  document.querySelectorAll("[data-seat-style]").forEach(function (button) {
+    button.setAttribute("aria-pressed", String(button.dataset.seatStyle === buildConfig.seatStyle));
+  });
+  document.querySelectorAll("[data-wheel-style]").forEach(function (button) {
+    button.setAttribute("aria-pressed", String(button.dataset.wheelStyle === buildConfig.wheelStyle));
+  });
+  [
+    ["seat-color", buildConfig.seatColor],
+    ["belt-color", buildConfig.beltColor],
+    ["stitch-color", buildConfig.stitchColor]
+  ].forEach(function (selection) {
+    document.querySelectorAll("[data-" + selection[0] + "]").forEach(function (button) {
+      button.setAttribute("aria-pressed", String(button.dataset[selection[0].replace(/-([a-z])/g, function (_, letter) { return letter.toUpperCase(); })] === selection[1]));
+    });
+  });
   document.getElementById("spoiler-choice").value = buildConfig.spoiler;
+  document.getElementById("side-skirt-choice").value = buildConfig.sideSkirt;
+  document.getElementById("splitter-choice").value = buildConfig.splitter;
+  document.getElementById("diffuser-choice").value = buildConfig.diffuser;
   document.querySelectorAll(".upgrade-option input").forEach(function (input) {
     input.checked = buildConfig.upgrades.includes(input.value);
   });
   document.getElementById("preview-model-name").textContent = vehicleNames[buildConfig.vehicle];
   document.getElementById("paint-name").textContent = paintNames[buildConfig.paint];
+  document.getElementById("wheel-style-name").textContent = wheelStyleNames[buildConfig.wheelStyle]
+    + (wheelStylePrices[buildConfig.wheelStyle] ? " · +" + money(wheelStylePrices[buildConfig.wheelStyle]) : " · Included");
+  document.getElementById("seat-style-name").textContent = seatStyleNames[buildConfig.seatStyle]
+    + (seatStylePrices[buildConfig.seatStyle] ? " · +" + money(seatStylePrices[buildConfig.seatStyle]) : " · Included");
+  document.getElementById("seat-color-name").textContent = seatColors[buildConfig.seatColor];
+  document.getElementById("belt-color-name").textContent = beltColors[buildConfig.beltColor];
+  document.getElementById("stitch-color-name").textContent = stitchColors[buildConfig.stitchColor];
+  var materialPrice = materialPrices[buildConfig.material];
+  document.getElementById("material-price-note").textContent = materialPrice > 0
+    ? "Material upgrade · +" + money(materialPrice)
+    : materialPrice < 0 ? "Material credit · " + money(materialPrice) : "Leather is included.";
   document.getElementById("spoiler-label").textContent = buildConfig.vehicle === "semi" ? "Cab deflector" : "Rear spoiler";
+  document.querySelectorAll("[data-camera]").forEach(function (button) {
+    button.setAttribute("aria-pressed", String(button.dataset.camera === cameraView));
+  });
   updateBuildSummary();
-  if (sceneState) sceneState.update(buildConfig);
+  if (sceneState) sceneState.update(buildConfig, cameraView);
 }
 
 function updateBuildSummary() {
@@ -152,7 +234,16 @@ function saveCurrentBuild() {
     vehicle: buildConfig.vehicle,
     paint: buildConfig.paint,
     material: buildConfig.material,
+    seatStyle: buildConfig.seatStyle,
+    seatColor: buildConfig.seatColor,
+    beltColor: buildConfig.beltColor,
+    stitchColor: buildConfig.stitchColor,
+    wheelStyle: buildConfig.wheelStyle,
     spoiler: buildConfig.spoiler,
+    sideSkirt: buildConfig.sideSkirt,
+    splitter: buildConfig.splitter,
+    diffuser: buildConfig.diffuser,
+    cameraView: cameraView,
     upgrades: buildConfig.upgrades.slice(),
     price: selectedBuildPrice()
   };
@@ -168,9 +259,18 @@ function loadBuild(build) {
     vehicle: build.vehicle,
     paint: build.paint,
     material: materialNames[build.material] ? build.material : "leather",
+    seatStyle: seatStyleNames[build.seatStyle] ? build.seatStyle : "sport",
+    seatColor: seatColors[build.seatColor] ? build.seatColor : "#252729",
+    beltColor: beltColors[build.beltColor] ? build.beltColor : "#202326",
+    stitchColor: stitchColors[build.stitchColor] ? build.stitchColor : "#d9e0e5",
+    wheelStyle: wheelStyleNames[build.wheelStyle] ? build.wheelStyle : "split",
     spoiler: spoilerNames[build.spoiler] ? build.spoiler : "none",
+    sideSkirt: sideSkirtNames[build.sideSkirt] ? build.sideSkirt : "none",
+    splitter: splitterNames[build.splitter] ? build.splitter : "none",
+    diffuser: diffuserNames[build.diffuser] ? build.diffuser : "none",
     upgrades: Array.isArray(build.upgrades) ? build.upgrades.filter(function (item) { return upgradeNames[item]; }) : []
   };
+  cameraView = build.cameraView === "interior" ? "interior" : "exterior";
   updateVehicleControls();
   document.getElementById("vehicle-status").textContent = "Build loaded into the studio.";
 }
@@ -196,9 +296,54 @@ document.querySelectorAll("[data-material]").forEach(function (button) {
   });
 });
 
+document.querySelectorAll("[data-seat-style]").forEach(function (button) {
+  button.addEventListener("click", function () {
+    buildConfig.seatStyle = button.dataset.seatStyle;
+    updateVehicleControls();
+  });
+});
+
+document.querySelectorAll("[data-wheel-style]").forEach(function (button) {
+  button.addEventListener("click", function () {
+    buildConfig.wheelStyle = button.dataset.wheelStyle;
+    updateVehicleControls();
+  });
+});
+
+[
+  ["seat-color", "seatColor"],
+  ["belt-color", "beltColor"],
+  ["stitch-color", "stitchColor"]
+].forEach(function (selection) {
+  document.querySelectorAll("[data-" + selection[0] + "]").forEach(function (button) {
+    button.addEventListener("click", function () {
+      buildConfig[selection[1]] = button.dataset[selection[0].replace(/-([a-z])/g, function (_, letter) { return letter.toUpperCase(); })];
+      updateVehicleControls();
+    });
+  });
+});
+
 document.getElementById("spoiler-choice").addEventListener("change", function (event) {
   buildConfig.spoiler = event.target.value;
   updateVehicleControls();
+});
+
+[
+  ["side-skirt-choice", "sideSkirt"],
+  ["splitter-choice", "splitter"],
+  ["diffuser-choice", "diffuser"]
+].forEach(function (selection) {
+  document.getElementById(selection[0]).addEventListener("change", function (event) {
+    buildConfig[selection[1]] = event.target.value;
+    updateVehicleControls();
+  });
+});
+
+document.querySelectorAll("[data-camera]").forEach(function (button) {
+  button.addEventListener("click", function () {
+    cameraView = button.dataset.camera;
+    updateVehicleControls();
+  });
 });
 
 document.querySelectorAll(".upgrade-option input").forEach(function (input) {
@@ -302,7 +447,6 @@ function startVehiclePreview(THREE) {
   var vehicleRoot = new THREE.Group();
   scene.add(vehicleRoot);
   var paintMaterials = [];
-  var interiorMaterials = [];
   var rimMaterials = [];
   var lightMaterials = [];
   var dynamicParts = new THREE.Group();
@@ -325,7 +469,7 @@ function startVehiclePreview(THREE) {
     return mesh;
   }
 
-  function addWheel(parent, x, z, radius, forged) {
+  function addWheel(parent, x, z, radius, forged, wheelStyle) {
     var tire = new THREE.Mesh(
       new THREE.CylinderGeometry(radius, radius, .34, 32),
       standard(0x121619, .8, .05)
@@ -344,23 +488,30 @@ function startVehiclePreview(THREE) {
     parent.add(rim);
     rimMaterials.push(rimMaterial);
 
-    var hub = new THREE.Mesh(new THREE.CylinderGeometry(radius * .13, radius * .13, .38, 16), standard(0x253038, .24, .8));
-    hub.rotation.z = Math.PI / 2;
-    hub.position.set(x, radius, z);
-    parent.add(hub);
-
-    if (forged) {
+    if (wheelStyle === "aero") {
+      var aeroFace = new THREE.Mesh(new THREE.CylinderGeometry(radius * .39, radius * .39, .37, 32), standard(0x344249, .3, .72));
+      aeroFace.rotation.z = Math.PI / 2;
+      aeroFace.position.set(x, radius, z);
+      parent.add(aeroFace);
+    } else {
       var spokes = new THREE.Group();
+      var spokeCount = wheelStyle === "turbine" ? 12 : forged ? 10 : 5;
       spokes.position.set(x, radius, z);
-      for (var spoke = 0; spoke < 8; spoke++) {
+      for (var spoke = 0; spoke < spokeCount; spoke++) {
         var bar = new THREE.Mesh(new THREE.BoxGeometry(.045, radius * .72, .055), rimMaterial);
         bar.position.y = radius * .2;
-        bar.rotation.x = spoke * Math.PI / 4;
+        bar.rotation.x = spoke * Math.PI * 2 / spokeCount;
         bar.castShadow = true;
         spokes.add(bar);
       }
       parent.add(spokes);
     }
+
+    var hub = new THREE.Mesh(new THREE.CylinderGeometry(radius * .13, radius * .13, .38, 16), standard(0x253038, .24, .8));
+    hub.rotation.z = Math.PI / 2;
+    hub.position.set(x, radius, z);
+    parent.add(hub);
+
   }
 
   function addHeadlights(parent, frontZ, width) {
@@ -371,32 +522,70 @@ function startVehiclePreview(THREE) {
     });
   }
 
-  function addCabinGlass(parent, width, z, depth, seatMaterial) {
-    var glass = standard(0x172c37, .16, .32, { transparent: true, opacity: .72 });
-    addBox(parent, [.035, .34, depth * .7], [-width * .49, 1.47, z], glass);
-    addBox(parent, [.035, .34, depth * .7], [width * .49, 1.47, z], glass);
-    var seatBack = addBox(parent, [.43, .49, .13], [-.4, 1.23, z - .08], seatMaterial);
-    var seatBase = addBox(parent, [.45, .13, .38], [-.4, 1.04, z + .12], seatMaterial);
-    var passengerBack = addBox(parent, [.43, .49, .13], [.4, 1.23, z - .08], seatMaterial);
-    var passengerBase = addBox(parent, [.45, .13, .38], [.4, 1.04, z + .12], seatMaterial);
-    interiorMaterials.push(seatBack.material, seatBase.material, passengerBack.material, passengerBase.material);
+  function addSeat(parent, x, z, centerY, config, seatMaterial, beltMaterial, stitchMaterial) {
+    var bucket = config.seatStyle === "bucket";
+    var width = bucket ? .46 : .4;
+    addBox(parent, [width, .5, .14], [x, centerY - .02, z - .04], seatMaterial);
+    addBox(parent, [width + .06, .14, .39], [x, centerY - .29, z + .14], seatMaterial);
+    addBox(parent, [.28, .2, .14], [x, centerY + .34, z - .12], seatMaterial);
+    if (bucket) {
+      [-1, 1].forEach(function (side) {
+        addBox(parent, [.09, .43, .18], [x + side * .22, centerY - .02, z + .015], seatMaterial);
+      });
+    }
+    var belt = addBox(parent, [.045, .045, .52], [x + (x < 0 ? -.2 : .2), centerY - .09, z + .08], beltMaterial);
+    belt.rotation.x = x < 0 ? -.62 : .62;
+    var stitch = addBox(parent, [.025, .025, .3], [x + (x < 0 ? -.23 : .23), centerY - .05, z + .02], stitchMaterial);
+    stitch.rotation.x = .1;
+  }
+
+  function addCabinGlass(parent, width, z, depth, config, centerY, paint, trim, seatMaterial, beltMaterial, stitchMaterial) {
+    var glass = standard(0x19313a, .12, .28, { transparent: true, opacity: .28, depthWrite: false });
+    [-1, 1].forEach(function (side) {
+      addBox(parent, [.028, .44, depth * .66], [side * width * .49, centerY, z], glass);
+      addBox(parent, [.075, .72, .1], [side * width * .41, centerY, z + depth * .4], paint, paintMaterials);
+      addBox(parent, [.075, .72, .1], [side * width * .41, centerY, z - depth * .4], paint, paintMaterials);
+    });
+    var windshield = addBox(parent, [width * .8, .56, .04], [0, centerY, z + depth * .47], glass);
+    windshield.rotation.x = .13;
+    var rearGlass = addBox(parent, [width * .72, .48, .04], [0, centerY, z - depth * .47], glass);
+    rearGlass.rotation.x = -.13;
+
+    addBox(parent, [width * .84, .14, .34], [0, centerY - .24, z + depth * .28], trim);
+    var steeringWheel = new THREE.Mesh(new THREE.TorusGeometry(.16, .025, 8, 24), standard(0x252c30, .3, .5));
+    steeringWheel.position.set(.34, centerY - .1, z + depth * .26);
+    steeringWheel.rotation.y = Math.PI / 2;
+    parent.add(steeringWheel);
+    addSeat(parent, -.4, z - .12, centerY, config, seatMaterial, beltMaterial, stitchMaterial);
+    addSeat(parent, .4, z - .12, centerY, config, seatMaterial, beltMaterial, stitchMaterial);
   }
 
   function buildVehicle(config) {
+    var geometries = new Set();
+    var materials = new Set();
+    vehicleRoot.traverse(function (object) {
+      if (!object.isMesh) return;
+      if (object.geometry) geometries.add(object.geometry);
+      if (Array.isArray(object.material)) object.material.forEach(function (material) { materials.add(material); });
+      else if (object.material) materials.add(object.material);
+    });
+    geometries.forEach(function (geometry) { geometry.dispose(); });
+    materials.forEach(function (material) { material.dispose(); });
     vehicleRoot.clear();
     paintMaterials = [];
-    interiorMaterials = [];
     rimMaterials = [];
     lightMaterials = [];
     dynamicParts = new THREE.Group();
     vehicleRoot.add(dynamicParts);
 
     var paint = standard(config.paint, .24, .62, { clearcoat: .8, clearcoatRoughness: .2 });
-    var glass = standard(0x142833, .17, .35, { transparent: true, opacity: .78 });
+    var glass = standard(0x19313a, .12, .28, { transparent: true, opacity: .3, depthWrite: false });
     var trim = standard(0x171c20, .36, .38);
     var chrome = standard(0x89979d, .22, .85);
-    var seatColor = config.material === "leather" ? 0x6b3529 : config.material === "alcantara" ? 0x354149 : 0x777168;
-    var seat = standard(seatColor, config.material === "leather" ? .34 : .76, .02);
+    var seat = standard(config.seatColor, config.material === "leather" ? .34 : .76, .02);
+    var belt = standard(config.beltColor, .72, .02);
+    var stitching = standard(config.stitchColor, .54, .02);
+    var carbon = standard(0x10171a, .27, .72);
     var lengthScale = config.vehicle === "semi" ? .67 : config.vehicle === "truck" ? .88 : 1;
     vehicleRoot.scale.setScalar(lengthScale);
 
@@ -404,14 +593,11 @@ function startVehiclePreview(THREE) {
       addBox(vehicleRoot, [1.96, .55, 4.55], [0, .82, 0], paint, paintMaterials);
       addBox(vehicleRoot, [1.91, .32, 1.35], [0, 1.12, 1.32], paint, paintMaterials);
       addBox(vehicleRoot, [1.78, .28, .82], [0, 1.08, -1.78], paint, paintMaterials);
-      addBox(vehicleRoot, [1.58, .65, 1.86], [0, 1.43, -.18], paint, paintMaterials);
       addBox(vehicleRoot, [1.47, .13, 1.25], [0, 1.82, -.22], paint, paintMaterials);
-      addBox(vehicleRoot, [1.42, .36, .035], [0, 1.48, .78], glass);
-      addBox(vehicleRoot, [1.35, .32, .035], [0, 1.48, -1.11], glass);
-      addCabinGlass(vehicleRoot, 1.58, -.18, 1.86, seat);
+      addCabinGlass(vehicleRoot, 1.58, -.18, 1.86, config, 1.43, paint, trim, seat, belt, stitching);
       [-1, 1].forEach(function (side) {
-        addWheel(vehicleRoot, side * 1.02, 1.4, .43, config.upgrades.includes("forged"));
-        addWheel(vehicleRoot, side * 1.02, -1.42, .43, config.upgrades.includes("forged"));
+        addWheel(vehicleRoot, side * 1.02, 1.4, .43, config.upgrades.includes("forged"), config.wheelStyle);
+        addWheel(vehicleRoot, side * 1.02, -1.42, .43, config.upgrades.includes("forged"), config.wheelStyle);
       });
       addHeadlights(vehicleRoot, 2.02, 1.96);
       addBox(vehicleRoot, [1.72, .1, .08], [0, .67, -2.28], trim);
@@ -419,15 +605,13 @@ function startVehiclePreview(THREE) {
     } else if (config.vehicle === "truck") {
       addBox(vehicleRoot, [2.12, .64, 5.15], [0, .83, 0], paint, paintMaterials);
       addBox(vehicleRoot, [2.06, .38, 1.55], [0, 1.2, 1.55], paint, paintMaterials);
-      addBox(vehicleRoot, [1.82, .78, 1.7], [0, 1.57, .25], paint, paintMaterials);
       addBox(vehicleRoot, [1.72, .14, 1.25], [0, 2.03, .22], paint, paintMaterials);
-      addBox(vehicleRoot, [1.62, .38, .04], [0, 1.68, 1.12], glass);
-      addCabinGlass(vehicleRoot, 1.82, .24, 1.7, seat);
+      addCabinGlass(vehicleRoot, 1.82, .24, 1.7, config, 1.68, paint, trim, seat, belt, stitching);
       addBox(vehicleRoot, [1.8, .12, 1.55], [0, 1.32, -1.66], trim);
       [-1, 1].forEach(function (side) {
         addBox(vehicleRoot, [.11, .36, 1.55], [side * .94, 1.44, -1.66], paint, paintMaterials);
-        addWheel(vehicleRoot, side * 1.09, 1.52, .5, config.upgrades.includes("forged"));
-        addWheel(vehicleRoot, side * 1.09, -1.72, .5, config.upgrades.includes("forged"));
+        addWheel(vehicleRoot, side * 1.09, 1.52, .5, config.upgrades.includes("forged"), config.wheelStyle);
+        addWheel(vehicleRoot, side * 1.09, -1.72, .5, config.upgrades.includes("forged"), config.wheelStyle);
       });
       addHeadlights(vehicleRoot, 2.38, 2.12);
       addBox(vehicleRoot, [2.02, .17, .16], [0, .58, 2.59], chrome);
@@ -437,17 +621,13 @@ function startVehiclePreview(THREE) {
       addBox(vehicleRoot, [2.45, 2.62, 5.65], [0, 2.02, -2.68], paint, paintMaterials);
       addBox(vehicleRoot, [2.25, .12, 5.2], [0, 3.38, -2.68], trim);
       addBox(vehicleRoot, [2.18, .17, .18], [0, 1.1, .65], trim);
-      addBox(vehicleRoot, [2.16, 1.58, 1.72], [0, 1.92, 1.16], paint, paintMaterials);
       addBox(vehicleRoot, [2.06, .14, 1.53], [0, 2.8, 1.12], paint, paintMaterials);
-      addBox(vehicleRoot, [1.72, .78, .04], [0, 2.04, 2.05], glass);
-      addBox(vehicleRoot, [.035, .66, 1.36], [-1.04, 2.03, 1.14], glass);
-      addBox(vehicleRoot, [.035, .66, 1.36], [1.04, 2.03, 1.14], glass);
-      addCabinGlass(vehicleRoot, 2.08, 1.13, 1.7, seat);
+      addCabinGlass(vehicleRoot, 2.08, 1.13, 1.7, config, 2.35, paint, trim, seat, belt, stitching);
       addHeadlights(vehicleRoot, 2.05, 2.16);
       [-1, 1].forEach(function (side) {
-        addWheel(vehicleRoot, side * 1.3, 1.48, .53, config.upgrades.includes("forged"));
+        addWheel(vehicleRoot, side * 1.3, 1.48, .53, config.upgrades.includes("forged"), config.wheelStyle);
         [-4.55, -3.85, -3.15].forEach(function (z) {
-          addWheel(vehicleRoot, side * 1.3, z, .51, config.upgrades.includes("forged"));
+          addWheel(vehicleRoot, side * 1.3, z, .51, config.upgrades.includes("forged"), config.wheelStyle);
         });
       });
       addBox(vehicleRoot, [2.25, .19, .22], [0, .57, 2.2], chrome);
@@ -455,10 +635,41 @@ function startVehiclePreview(THREE) {
     }
 
     dynamicParts.position.y = 0;
+    if (config.sideSkirt !== "none") {
+      var skirtMaterial = config.sideSkirt === "carbon" ? carbon : paint;
+      if (config.vehicle === "semi") {
+        [-1, 1].forEach(function (side) {
+          addBox(dynamicParts, [.11, .48, 5.1], [side * 1.24, .53, -2.68], skirtMaterial);
+        });
+      } else {
+        var skirtLength = config.vehicle === "truck" ? 2.55 : 2.2;
+        [-1, 1].forEach(function (side) {
+          addBox(dynamicParts, [.13, .16, skirtLength], [side * (config.vehicle === "truck" ? 1.02 : .98), .58, -.06], skirtMaterial);
+        });
+      }
+    }
+    if (config.splitter !== "none") {
+      var splitterMaterial = config.splitter === "carbon" ? carbon : paint;
+      var splitterZ = config.vehicle === "semi" ? 2.39 : config.vehicle === "truck" ? 2.65 : 2.31;
+      var splitterWidth = config.vehicle === "semi" ? 2.34 : config.vehicle === "truck" ? 2.16 : 2.02;
+      addBox(dynamicParts, [splitterWidth, .09, .38], [0, .49, splitterZ], splitterMaterial);
+      [-1, 1].forEach(function (side) {
+        addBox(dynamicParts, [.12, .07, .27], [side * splitterWidth * .42, .54, splitterZ - .16], carbon);
+      });
+    }
+    if (config.diffuser !== "none") {
+      var diffuserMaterial = config.diffuser === "carbon" ? carbon : paint;
+      var rearPosition = config.vehicle === "semi" ? -5.56 : config.vehicle === "truck" ? -2.66 : -2.34;
+      var diffuserWidth = config.vehicle === "semi" ? 2.25 : config.vehicle === "truck" ? 1.96 : 1.72;
+      addBox(dynamicParts, [diffuserWidth, .13, .38], [0, .5, rearPosition], diffuserMaterial);
+      [-.42, 0, .42].forEach(function (x) {
+        addBox(dynamicParts, [.055, .15, .32], [x * diffuserWidth, .5, rearPosition], carbon);
+      });
+    }
     if (config.spoiler !== "none") {
       var spoilerZ = config.vehicle === "semi" ? .05 : config.vehicle === "truck" ? -2.5 : -2.25;
       var spoilerY = config.vehicle === "semi" ? 3.35 : config.vehicle === "truck" ? 2.08 : 1.82;
-      var spoilerMaterial = standard(0x182126, .28, .55);
+      var spoilerMaterial = config.spoiler === "wing" ? carbon : paint;
       var wingWidth = config.spoiler === "wing" ? 2.1 : 1.76;
       var wingDepth = config.spoiler === "wing" ? .31 : .2;
       if (config.spoiler === "wing") {
@@ -492,20 +703,34 @@ function startVehiclePreview(THREE) {
     }
   }
 
+  function positionCamera() {
+    if (cameraView === "interior") {
+      if (buildConfig.vehicle === "semi") {
+        camera.position.set(3.4, 2.5, 1.1);
+        camera.lookAt(0, 1.55, .78);
+      } else {
+        camera.position.set(buildConfig.vehicle === "truck" ? 4.1 : 3.5, 2.15, .28);
+        camera.lookAt(0, buildConfig.vehicle === "truck" ? 1.48 : 1.32, -.12);
+      }
+      camera.updateProjectionMatrix();
+      return;
+    }
+    camera.position.set(buildConfig.vehicle === "semi" ? 8.5 : 7.5, 4.4, buildConfig.vehicle === "semi" ? 11.7 : buildConfig.vehicle === "truck" ? 9.4 : 8.2);
+    camera.lookAt(0, buildConfig.vehicle === "semi" ? 1.35 : 1, 0);
+    camera.updateProjectionMatrix();
+  }
+
   function resize() {
     var width = Math.max(1, stage.clientWidth);
     var height = Math.max(1, stage.clientHeight);
     renderer.setSize(width, height, false);
     camera.aspect = width / height;
-    camera.position.z = buildConfig.vehicle === "semi" ? 11.7 : buildConfig.vehicle === "truck" ? 9.4 : 8.2;
-    camera.position.x = buildConfig.vehicle === "semi" ? 8.5 : 7.5;
-    camera.lookAt(0, buildConfig.vehicle === "semi" ? 1.35 : 1, 0);
-    camera.updateProjectionMatrix();
+    positionCamera();
   }
 
   function animate() {
     requestAnimationFrame(animate);
-    if (!pointerDown && !reducedMotion) vehicleRoot.rotation.y += .0014;
+    if (!pointerDown && !reducedMotion && cameraView === "exterior") vehicleRoot.rotation.y += .0014;
     renderer.render(scene, camera);
   }
 
@@ -530,7 +755,12 @@ function startVehiclePreview(THREE) {
 
   if ("ResizeObserver" in window) new ResizeObserver(resize).observe(stage);
   window.addEventListener("resize", resize);
-  sceneState = { update: buildVehicle };
+  sceneState = {
+    update: function (config) {
+      buildVehicle(config);
+      positionCamera();
+    }
+  };
   buildVehicle(buildConfig);
   resize();
   message.hidden = true;

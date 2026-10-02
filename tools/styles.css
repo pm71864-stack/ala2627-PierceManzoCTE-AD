@@ -528,6 +528,28 @@ h2 {
   min-width: 0;
 }
 
+.camera-switcher {
+  display: flex;
+  gap: .4rem;
+  margin: 0 0 .55rem;
+}
+
+.camera-switcher button {
+  min-height: 2rem;
+  padding: 0 .7rem;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  background: rgba(10, 17, 23, .82);
+  color: var(--muted);
+  font: .65rem var(--mono);
+  cursor: pointer;
+}
+
+.camera-switcher button[aria-pressed="true"] {
+  border-color: var(--cyan);
+  color: var(--cyan);
+}
+
 .preview-topline {
   min-height: 2.5rem;
   display: flex;
@@ -687,7 +709,21 @@ h2 {
   color: var(--ink);
 }
 
-.spoiler-section select {
+.detail-swatches {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .65rem;
+  padding: .15rem .2rem;
+}
+
+.wheel-options .material-choice {
+  min-width: 0;
+  padding-inline: .2rem;
+  font-size: .63rem;
+}
+
+.spoiler-section select,
+.exterior-options select {
   width: 100%;
   min-height: 2.5rem;
   padding: .55rem .65rem;
@@ -696,6 +732,17 @@ h2 {
   background: #0a1117;
   color: var(--ink);
   font-size: .75rem;
+}
+
+.exterior-options label {
+  display: block;
+  margin: .65rem 0 .3rem;
+  color: var(--muted);
+  font-size: .68rem;
+}
+
+.exterior-options h3+label {
+  margin-top: 0;
 }
 
 .upgrade-option {
