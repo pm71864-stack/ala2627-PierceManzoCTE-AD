@@ -276,6 +276,108 @@
       font-size: .85rem
     }
 
+    .quick-research-form {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: .4rem;
+      margin-top: .5rem
+    }
+
+    .quick-research-form input {
+      min-width: 0;
+      width: 100%;
+      padding: .55rem .65rem;
+      border: 1px solid var(--ss-border, #2a3142);
+      border-radius: 7px;
+      background: #0b0f18;
+      color: var(--ss-bone, #e8ecf3);
+      font: .8rem/1.3 var(--ss-body, system-ui, sans-serif)
+    }
+
+    .quick-research-form input:focus-visible,
+    .quick-research-action:focus-visible {
+      outline: 2px solid var(--ss-green, #3effa0);
+      outline-offset: 2px
+    }
+
+    .quick-research-action {
+      cursor: pointer;
+      padding: .45rem .6rem;
+      border: 1px solid var(--ss-border, #2a3142);
+      border-radius: 7px;
+      background: rgba(255, 255, 255, .04);
+      color: var(--ss-bone, #e8ecf3);
+      font: 600 .7rem/1.2 var(--ss-mono, ui-monospace, monospace)
+    }
+
+    .quick-research-action:hover {
+      border-color: var(--ss-green, #3effa0)
+    }
+
+    .quick-research-list {
+      display: grid;
+      gap: .55rem;
+      margin-top: .65rem
+    }
+
+    .quick-research-card {
+      padding: .65rem;
+      border: 1px solid var(--ss-border, #2a3142);
+      border-radius: 8px;
+      background: rgba(0, 0, 0, .16)
+    }
+
+    .quick-research-heading,
+    .quick-research-item {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: .45rem
+    }
+
+    .quick-research-heading strong,
+    .quick-research-item strong {
+      display: block;
+      color: var(--ss-bone, #e8ecf3);
+      font-size: .78rem;
+      overflow-wrap: anywhere
+    }
+
+    .quick-research-heading small,
+    .quick-research-item small {
+      display: block;
+      margin-top: .15rem;
+      color: var(--ss-faint, #74809a);
+      font-size: .68rem;
+      overflow-wrap: anywhere
+    }
+
+    .quick-research-items {
+      display: grid;
+      gap: .45rem;
+      margin: .5rem 0;
+      padding: 0;
+      list-style: none
+    }
+
+    .quick-research-item {
+      padding-top: .45rem;
+      border-top: 1px solid var(--ss-border, #2a3142)
+    }
+
+    .quick-research-suggestions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .3rem;
+      margin-top: .45rem
+    }
+
+    .quick-research-empty {
+      margin: .6rem 0 0;
+      color: var(--ss-faint, #74809a);
+      font-size: .73rem
+    }
+
     /* ── the grid: the dashboard's, verbatim in behaviour ───────────────────── */
     .bento {
       display: grid;
@@ -1137,6 +1239,22 @@
             <button class="quick-tool-control" id="quick-idea-button" type="button">Surprise me</button>
             <p class="quick-idea" id="quick-idea-output" aria-live="polite">Need a spark? Pick an idea.</p>
           </section>
+          <section class="quick-tool" aria-labelledby="rabbit-hole-title">
+            <span class="quick-tool-title" id="rabbit-hole-title">Rabbit hole</span>
+            <form class="quick-research-form" id="rabbit-hole-form" data-research-form="trail">
+              <input name="topic" aria-label="Rabbit hole topic" placeholder="Start with a topic or question" required>
+              <button class="quick-research-action" type="submit">Start</button>
+            </form>
+            <div class="quick-research-list" id="rabbit-hole-list" aria-live="polite"></div>
+          </section>
+          <section class="quick-tool" aria-labelledby="tab-stacks-title">
+            <span class="quick-tool-title" id="tab-stacks-title">Tab organizer</span>
+            <form class="quick-research-form" id="tab-stack-form" data-research-form="stack">
+              <input name="name" aria-label="New tab stack name" placeholder="Name a stack" required>
+              <button class="quick-research-action" type="submit">Create</button>
+            </form>
+            <div class="quick-research-list" id="tab-stack-list" aria-live="polite"></div>
+          </section>
           <section class="quick-tool" aria-labelledby="quick-checklist-title">
             <span class="quick-tool-title" id="quick-checklist-title">Jump to</span>
             <a class="quick-tool-link" href="#success-checklist">Success checklist</a>
@@ -1657,6 +1775,7 @@ python proxy-server.py</pre>
       msg.textContent = "Downloaded. Upload that file to the assignment.";
     });
   </script>
+  <script src="./research-tools.js"></script>
 </body>
 
 </html>
