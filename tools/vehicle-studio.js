@@ -351,9 +351,10 @@ function startVehiclePreview(THREE) {
 
     if (forged) {
       var spokes = new THREE.Group();
+      spokes.position.set(x, radius, z);
       for (var spoke = 0; spoke < 8; spoke++) {
-        var bar = new THREE.Mesh(new THREE.BoxGeometry(.38, .045, .065), rimMaterial);
-        bar.position.set(x + (x < 0 ? -.02 : .02), radius, z);
+        var bar = new THREE.Mesh(new THREE.BoxGeometry(.045, radius * .72, .055), rimMaterial);
+        bar.position.y = radius * .2;
         bar.rotation.x = spoke * Math.PI / 4;
         bar.castShadow = true;
         spokes.add(bar);
