@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#080d12">
+  <title>Tools | Pierce Manzo</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600;700&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <script src="script.js" defer></script>
+</head>
+
+<body>
+  <header class="tool-header">
+    <a class="brand" href="../" aria-label="Pierce Manzo home">
+      <span class="brand-mark">PM</span>
+      <span>Pierce Manzo</span>
+    </a>
+    <a class="back-link" href="../">Back to portfolio <span aria-hidden="true">↗</span></a>
+  </header>
+
+  <main class="tool-shell">
+    <section class="tool-intro" aria-labelledby="page-title">
+      <p class="eyebrow"><span class="status-dot"></span> A growing collection / 01</p>
+      <h1 id="page-title">Follow your<br><em>curiosity.</em></h1>
+      <p class="intro-copy">Small tools for collecting questions, following good links, and finding your way back.</p>
+    </section>
+
+    <nav class="tool-switcher" role="tablist" aria-label="Choose a tool">
+      <button id="rabbit-tab" class="tool-tab" type="button" role="tab" aria-selected="true" aria-controls="rabbit-view"
+        data-view="rabbit">
+        <span class="tab-index">01</span> Rabbit hole
+      </button>
+      <button id="stacks-tab" class="tool-tab" type="button" role="tab" aria-selected="false"
+        aria-controls="stacks-view" data-view="stacks" tabindex="-1">
+        <span class="tab-index">02</span> Tab organizer
+      </button>
+    </nav>
+    <p class="tool-status" id="tool-status" role="status" aria-live="polite"></p>
+
+    <section id="rabbit-view" class="tool-view" role="tabpanel" aria-labelledby="rabbit-tab">
+      <div class="view-heading">
+        <div>
+          <p class="section-kicker">Explore one idea at a time</p>
+          <h2>Rabbit hole</h2>
+        </div>
+        <p>Start with a question. Save each interesting hop with a note, then follow a suggested thread.</p>
+      </div>
+      <form id="trail-form" class="create-form" data-form="trail">
+        <label class="sr-only" for="trail-topic">Topic or question</label>
+        <input id="trail-topic" name="topic" placeholder="A topic or question to chase..." required>
+        <button class="primary-button" type="submit">Start a trail <span aria-hidden="true">↗</span></button>
+      </form>
+      <div id="trail-list" class="saved-list" aria-live="polite"></div>
+    </section>
+
+    <section id="stacks-view" class="tool-view" role="tabpanel" aria-labelledby="stacks-tab" hidden>
+      <div class="view-heading">
+        <div>
+          <p class="section-kicker">Keep useful tabs together</p>
+          <h2>Tab organizer</h2>
+        </div>
+        <p>Make a stack for a class, project, or later. Reorder saved links and open them in separate tabs.</p>
+      </div>
+      <form id="stack-form" class="create-form" data-form="stack">
+        <label class="sr-only" for="stack-name">Stack name</label>
+        <input id="stack-name" name="name" placeholder="Name a new stack..." required>
+        <button class="primary-button" type="submit">Create stack <span aria-hidden="true">+</span></button>
+      </form>
+      <div id="stack-list" class="saved-list" aria-live="polite"></div>
+    </section>
+  </main>
+
+  <footer class="tool-footer">
+    <a href="../">← Pierce Manzo</a>
+    <span>New tools will live here.</span>
+  </footer>
+</body>
+
+</html>
